@@ -186,11 +186,6 @@ public class ConfigScreen extends BetterScreen {
     }
 
     @Override
-    public void resize(int width, int height) {
-        onClose();
-    }
-
-    @Override
     public void onClose() {
         setScreen(parent);
     }
