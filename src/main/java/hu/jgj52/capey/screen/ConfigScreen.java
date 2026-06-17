@@ -15,10 +15,7 @@ import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.PlayerSkin;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import org.jspecify.annotations.NonNull;
 
 import java.awt.*;
@@ -34,6 +31,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
+
+import static hu.jgj52.capey.Capey.setScreen;
 
 public class ConfigScreen extends BetterScreen {
     private static final Minecraft mc = Minecraft.getInstance();
@@ -169,7 +168,7 @@ public class ConfigScreen extends BetterScreen {
                 Button.builder(
                                 Component.translatable("capey.config.main.profile"),
                                 button ->
-                                    mc.setScreen(new ProfileScreen(this, mc.player))
+                                    setScreen(new ProfileScreen(this, mc.player))
                         )
                         .bounds(width - 90, 10, 80, 20)
                         .build(),
@@ -200,6 +199,6 @@ public class ConfigScreen extends BetterScreen {
 
     @Override
     public void onClose() {
-        mc.setScreen(parent);
+        setScreen(parent);
     }
 }

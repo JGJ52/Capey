@@ -1,7 +1,6 @@
 package hu.jgj52.capey.screen;
 
 import com.google.common.net.HttpHeaders;
-import com.mojang.authlib.GameProfile;
 import hu.jgj52.capey.Capey;
 import hu.jgj52.capey.types.Cape;
 import hu.jgj52.capey.types.Player;
@@ -15,12 +14,8 @@ import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.player.RemotePlayer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.PlayerSkin;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import org.jspecify.annotations.NonNull;
 
 import java.awt.*;
@@ -35,6 +30,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
+
+import static hu.jgj52.capey.Capey.setScreen;
 
 public class ProfileScreen extends BetterScreen {
     private static final Minecraft mc = Minecraft.getInstance();
@@ -196,6 +193,6 @@ public class ProfileScreen extends BetterScreen {
 
     @Override
     public void onClose() {
-        mc.setScreen(parent);
+        setScreen(parent);
     }
 }
