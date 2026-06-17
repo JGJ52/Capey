@@ -1,6 +1,7 @@
 package hu.jgj52.capey.types;
 
 import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.yggdrasil.ProfileResult;
 import hu.jgj52.capey.Capey;
 import net.minecraft.client.Minecraft;
 //? >= 1.21.9 {
@@ -17,6 +18,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
 public class Player {
@@ -74,8 +76,7 @@ public class Player {
 
     public Supplier<PlayerSkin> getSkin() {
         Optional<GameProfile> opt = mc.services().profileResolver().fetchById(uuid);
-        if (opt.isEmpty()) return null;
-        GameProfile profile = opt.get();
+        GameProfile profile = opt.orElse(new GameProfile(uuid, ""));
         //? < 1.21.9 {
         /*AtomicReference<PlayerSkin> skin = new AtomicReference<>(mc.getSkinManager().getInsecureSkin(profile));
         CompletableFuture.runAsync(() -> {

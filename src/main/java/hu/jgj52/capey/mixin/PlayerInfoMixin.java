@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import static hu.jgj52.capey.Capey.getUUID;
+import static hu.jgj52.capey.version.VGameProfile.getUUID;
 
 @Mixin(PlayerInfo.class)
 public class PlayerInfoMixin {

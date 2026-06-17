@@ -15,6 +15,7 @@ Identifier
 *///? }
 ;
 //? >= 1.21.9 {
+import net.minecraft.world.entity.player.PlayerModelType;
 import net.minecraft.world.entity.player.PlayerSkin;
 import net.minecraft.core.ClientAsset;
 import org.jspecify.annotations.NonNull;
@@ -155,6 +156,15 @@ public class Cape {
             *///? }
             );
         };
+    }
+
+    public Supplier<PlayerSkin> emptySkin() {
+        return () -> new PlayerSkin(
+                new TextureImpl(Identifier.fromNamespaceAndPath("capey", "skins/empty.png")),
+                new TextureImpl(getIdentifier()), new TextureImpl(getIdentifier()),
+                PlayerModelType.SLIM,
+                false
+        );
     }
 
     //? >= 1.21.10 {

@@ -1,7 +1,9 @@
 package hu.jgj52.capey.types;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import net.fabricmc.loader.api.FabricLoader;
 
 import java.io.*;
@@ -20,6 +22,18 @@ public class Config {
 
     public JsonObject get() {
         return content;
+    }
+
+    public JsonElement get(String s) {
+        return content.get(s);
+    }
+
+    public JsonElement getOrElse(String s, JsonElement e) {
+        return content.has(s) ? get(s) : e;
+    }
+
+    public void set(String s, JsonElement e) {
+        content.add(s, e);
     }
 
     public void save() {

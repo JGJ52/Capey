@@ -1,12 +1,15 @@
 package hu.jgj52.capey.screen;
 
 import com.google.common.net.HttpHeaders;
+import com.mojang.authlib.GameProfile;
 import hu.jgj52.capey.Capey;
 import hu.jgj52.capey.types.Cape;
 import hu.jgj52.capey.types.Player;
+import hu.jgj52.capey.version.VGameProfile;
 import hu.jgj52.capey.widget.PlayerWithCapeWidget;
 import hu.jgj52.screenapi.screen.BetterScreen;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.User;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
@@ -31,7 +34,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
-import static hu.jgj52.capey.Capey.setScreen;
+import static hu.jgj52.capey.version.VGameProfile.getName;
+import static hu.jgj52.capey.version.VScreen.setScreen;
 
 public class ProfileScreen extends BetterScreen {
     private static final Minecraft mc = Minecraft.getInstance();
@@ -39,10 +43,14 @@ public class ProfileScreen extends BetterScreen {
     private static final ExecutorService fetcher = Executors.newVirtualThreadPerTaskExecutor();
 
     private final Screen parent;
-    private final AbstractClientPlayer player;
+    private final VGameProfile player;
     public ProfileScreen(Screen parent, AbstractClientPlayer player) {
         this.parent = parent;
-        this.player = player;
+        this.player = new VGameProfile(player.getUUID(), getName(player.getGameProfile()));
+    }
+    public ProfileScreen(Screen parent, User player) {
+        this.parent = parent;
+        this.player = new VGameProfile(player.getProfileId(), player.getName());
     }
 
     @Override
@@ -57,14 +65,14 @@ public class ProfileScreen extends BetterScreen {
 
     @Override
     protected void createWidgets(Font font) {
-        Player cplayer = Player.of(this.player.getUUID());
-        PlayerWithCapeWidget.FakePlayer mplayer = new PlayerWithCapeWidget.FakePlayer(this.player::getSkin);
+        Player cplayer = Player.of(player.getUUID());
+        Cape ccape = cplayer.getCape();
         widget(new StringWidget(
-                70 - font.width(this.player.getName()) / 2,
+                70 - font.width(this.player.name()) / 2,
                 height / 2 - 110 - font.lineHeight,
-                font.width(this.player.getName()),
+                font.width(this.player.name()),
                 font.lineHeight,
-                this.player.getName(),
+                this.player.name(),
                 font
         ), "name", true);
         PlayerWithCapeWidget widget = widget(new PlayerWithCapeWidget(
@@ -72,7 +80,7 @@ public class ProfileScreen extends BetterScreen {
                 height / 2 - 100,
                 140,
                 200,
-                mplayer,
+                ccape != null ? ccape.fromSkin(cplayer.getSkin()) : cplayer.getSkin(),
                 80
         ), "skin", true);
         widget.rotateX(180);
@@ -90,16 +98,14 @@ public class ProfileScreen extends BetterScreen {
             Cape cape = Cape.of(UUID.fromString(capeO.get("uuid").getAsString()));
             Supplier<PlayerSkin> skinWithCape = cape.fromSkin(player.getSkin());
 
-            PlayerWithCapeWidget.FakePlayer p = new PlayerWithCapeWidget.FakePlayer(skinWithCape);
-
             int i = offset.getAndIncrement();
-            net.minecraft.world.entity.player.Player tPlayer = this.player;
+            VGameProfile tPlayer = this.player;
             all.add(widget(new PlayerWithCapeWidget(
                     (i % perRow) * 80 + (width - perRow * 80) / 2,
                     (i / perRow) * 100 + 50,
                     70,
                     100,
-                    p
+                    skinWithCape
             ) {
                 @Override
                 protected void extractWidgetRenderState(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
@@ -163,11 +169,7 @@ public class ProfileScreen extends BetterScreen {
         widget(
                 Button.builder(
                                 Component.translatable("capey.config.main.elytra"),
-                                button -> {
-                                    for (PlayerWithCapeWidget wwidget : all) {
-                                        wwidget.getPlayer().elytra();
-                                    }
-                                }
+                                button -> PlayerWithCapeWidget.FakePlayer.elytra()
                         )
                         .bounds(10, 10, 80, 20)
                         .build(),
@@ -187,7 +189,7 @@ public class ProfileScreen extends BetterScreen {
                     font.lineHeight,
                     level,
                     font
-            ));
+            ), null, true);
         }
     }
 

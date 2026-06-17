@@ -1,7 +1,6 @@
 package hu.jgj52.capey.screen;
 
 import com.google.common.net.HttpHeaders;
-import com.mojang.authlib.GameProfile;
 import hu.jgj52.capey.Capey;
 import hu.jgj52.capey.types.Cape;
 import hu.jgj52.capey.types.Player;
@@ -32,7 +31,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
-import static hu.jgj52.capey.Capey.setScreen;
+import static hu.jgj52.capey.version.VScreen.setScreen;
 
 public class ConfigScreen extends BetterScreen {
     private static final Minecraft mc = Minecraft.getInstance();
@@ -67,15 +66,13 @@ public class ConfigScreen extends BetterScreen {
             Cape cape = Cape.of(UUID.fromString(capeO.get("uuid").getAsString()));
             Supplier<PlayerSkin> skinWithCape = cape.fromSkin(player.getSkin());
 
-            PlayerWithCapeWidget.FakePlayer p = new PlayerWithCapeWidget.FakePlayer(skinWithCape);
-
             int i = offset.getAndIncrement();
             all.add(widget(new PlayerWithCapeWidget(
                     (i % perRow) * 80 + (width - perRow * 80) / 2,
                     (i / perRow) * 100 + 50,
                     70,
                     100,
-                    p
+                    skinWithCape
             ) {
                 @Override
                 protected void extractWidgetRenderState(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
@@ -139,11 +136,7 @@ public class ConfigScreen extends BetterScreen {
         widget(
                 Button.builder(
                         Component.translatable("capey.config.main.elytra"),
-                        button -> {
-                            for (PlayerWithCapeWidget widget : all) {
-                                widget.getPlayer().elytra();
-                            }
-                        }
+                        button -> PlayerWithCapeWidget.FakePlayer.elytra()
                 )
                 .bounds(10, 40, 80, 20)
                 .build(),
@@ -168,7 +161,7 @@ public class ConfigScreen extends BetterScreen {
                 Button.builder(
                                 Component.translatable("capey.config.main.profile"),
                                 button ->
-                                    setScreen(new ProfileScreen(this, mc.player))
+                                    setScreen(mc.player != null ? new MyProfileScreen(this, mc.player) : new MyProfileScreen(this, mc.getUser()))
                         )
                         .bounds(width - 90, 10, 80, 20)
                         .build(),
@@ -188,7 +181,7 @@ public class ConfigScreen extends BetterScreen {
                     font.lineHeight,
                     level,
                     font
-            ));
+            ), null, true);
         }
     }
 

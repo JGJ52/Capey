@@ -1,5 +1,6 @@
 package hu.jgj52.capey.widget;
 
+import com.google.gson.JsonPrimitive;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -16,6 +17,8 @@ import org.joml.Vector3f;
 
 import java.util.function.Supplier;
 
+import static hu.jgj52.capey.Capey.config;
+
 public class PlayerWithCapeWidget extends AbstractWidget {
     public static class FakePlayer {
         private static ItemStack ely = ItemStack.EMPTY;
@@ -31,14 +34,16 @@ public class PlayerWithCapeWidget extends AbstractWidget {
         }
 
         private final Supplier<PlayerSkin> skin;
-        private boolean elytra = false;
+        private static boolean elytra = config.getOrElse("elytra", new JsonPrimitive(false)).getAsBoolean();
 
         public FakePlayer(Supplier<PlayerSkin> skin) {
             this.skin = skin;
         }
 
-        public void elytra() {
+        public static void elytra() {
             elytra = !elytra;
+            config.set("elytra", new JsonPrimitive(elytra));
+            config.save();
         }
 
         public AvatarRenderState state() {
@@ -59,13 +64,14 @@ public class PlayerWithCapeWidget extends AbstractWidget {
     private boolean background = false;
     private float rotationX = 160;
     private float rotationY = 200;
-    public PlayerWithCapeWidget(int x, int y, int width, int height, FakePlayer player, int scale) {
+    private float offset = 0.7f;
+    public PlayerWithCapeWidget(int x, int y, int width, int height, Supplier<PlayerSkin> skin, int scale) {
         super(x, y, width, height, Component.empty());
-        this.player = player;
+        this.player = new FakePlayer(skin);
         this.scale = scale;
     }
-    public PlayerWithCapeWidget(int x, int y, int width, int height, FakePlayer player) {
-        this(x, y, width, height, player, 40);
+    public PlayerWithCapeWidget(int x, int y, int width, int height, Supplier<PlayerSkin> skin) {
+        this(x, y, width, height, skin, 40);
     }
 
     public FakePlayer getPlayer() {
@@ -78,6 +84,10 @@ public class PlayerWithCapeWidget extends AbstractWidget {
 
     public void rotateY(float y) {
         rotationY = y;
+    }
+
+    public void offset(float offset) {
+        this.offset = offset;
     }
 
     public void background(boolean background) {
@@ -103,7 +113,7 @@ public class PlayerWithCapeWidget extends AbstractWidget {
         graphics.entity(
                 player.state(),
                 scale,
-                new Vector3f(0, 0.7f, 0),
+                new Vector3f(0, offset, 0),
                 new Quaternionf()
                         .rotateX((float) Math.toRadians(rotationX))
                         .rotateY((float) Math.toRadians(rotationY)),
