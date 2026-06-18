@@ -6,13 +6,17 @@ import hu.jgj52.capey.widget.PlayerWithCapeWidget;
 import hu.jgj52.screenapi.screen.BetterScreen;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static hu.jgj52.capey.version.VScreen.setScreen;
 
@@ -74,7 +78,7 @@ public class CreateCapeScreen extends BetterScreen {
             ), null, true);
         }
 
-        widget(new BoardWidget(
+        BoardWidget board = widget(new BoardWidget(
                 width / 2 - 64 * BoardWidget.scale / 2,
                 60,
                 64,
@@ -290,6 +294,49 @@ public class CreateCapeScreen extends BetterScreen {
                 );
             }
         }, "board", true);
+
+        AtomicInteger a = new AtomicInteger(255);
+        AtomicInteger r = new AtomicInteger(255);
+        AtomicInteger g = new AtomicInteger(255);
+        AtomicInteger b = new AtomicInteger(255);
+
+        int i = -1;
+        for (AtomicInteger integer : List.of(a, r, g, b)) {
+            i++;
+            Component component = Component.literal("ARGB".substring(i, i + 1));
+            widget(new StringWidget(
+                    10,
+                    40 + font.lineHeight * 2 * (i + 1) + 2,
+                    font.width(component),
+                    font.lineHeight,
+                    component,
+                    font
+            ));
+
+            widget(new AbstractSliderButton(
+                    12 + font.width(component),
+                    40 + font.lineHeight * 2 * (i + 1),
+                    80,
+                    font.lineHeight + 2,
+                    Component.literal(String.valueOf(integer.get())),
+                    (double) integer.get() / 255
+            ) {
+                @Override
+                protected void updateMessage() {
+                    setMessage(Component.literal(String.valueOf(integer.get())));
+                }
+
+                @Override
+                protected void applyValue() {
+                    int val = (int) (value * 255);
+                    integer.set(val);
+
+                    board.color(
+                            (a.get() << 24) | (r.get() << 16) | (g.get() << 8) | b.get()
+                    );
+                }
+            });
+        }
     }
 
     @Override
