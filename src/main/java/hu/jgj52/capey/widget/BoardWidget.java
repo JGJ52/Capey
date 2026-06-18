@@ -42,6 +42,8 @@ public class BoardWidget extends AbstractWidget {
             int x = i % w;
             int y = i / w;
 
+            if ((color >>> 24) == 0) continue;
+
             graphics.fill(
                     getX() + x * scale,
                     getY() + y * scale,

@@ -86,11 +86,14 @@ public class CreateCapeScreen extends BetterScreen {
                 // why does this take so long
                 // i spent 45 minutes on this
 
+                int width = w / 64 * 10;
+                int height = h / 32 * 16;
+
                 // top
                 graphics.fill(
                         getX() + scale + 1,
                         getY(),
-                        getX() + scale * 11 - 1,
+                        getX() + scale * (width + 1) - 1,
                         getY() + 1,
                         0xff00ff00
                 );
@@ -106,48 +109,48 @@ public class CreateCapeScreen extends BetterScreen {
                 graphics.fill(
                         getX() + scale + 1,
                         getY() + scale - 1,
-                        getX() + scale * 11 - 1,
+                        getX() + scale * (width + 1) - 1,
                         getY() + scale,
                         0xff00ff00
                 );
                 // right
                 graphics.fill(
-                        getX() + scale * 11 -1,
+                        getX() + scale * (width + 1) - 1,
                         getY(),
-                        getX() + scale * 11,
+                        getX() + scale * (width + 1),
                         getY() + scale,
                         0xff00ff00
                 );
 
                 // top
                 graphics.fill(
-                        getX() + scale * 11 + 1,
+                        getX() + scale * (width + 1) + 1,
                         getY(),
-                        getX() + scale * 21 - 1,
+                        getX() + scale * (width * 2 + 1) - 1,
                         getY() + 1,
                         0xff0000ff
                 );
                 // left
                 graphics.fill(
-                        getX() + scale * 11,
+                        getX() + scale * (width + 1),
                         getY(),
-                        getX() + scale * 11 + 1,
+                        getX() + scale * (width + 1) + 1,
                         getY() + scale,
                         0xff0000ff
                 );
                 // bottom
                 graphics.fill(
-                        getX() + scale * 11 + 1,
+                        getX() + scale * (width + 1) + 1,
                         getY() + scale - 1,
-                        getX() + scale * 21 - 1,
+                        getX() + scale * (width * 2 + 1) - 1,
                         getY() + scale,
                         0xff0000ff
                 );
                 // right
                 graphics.fill(
-                        getX() + scale * 21 - 1,
+                        getX() + scale * (width * 2 + 1) - 1,
                         getY(),
-                        getX() + scale * 21,
+                        getX() + scale * (width * 2 + 1),
                         getY() + scale,
                         0xff0000ff
                 );
@@ -165,15 +168,15 @@ public class CreateCapeScreen extends BetterScreen {
                         getX(),
                         getY() + scale + 1,
                         getX() + 1,
-                        getY() + 17 * scale - 1,
+                        getY() + scale * (height + 1) - 1,
                         0xffff0000
                 );
                 // bottom
                 graphics.fill(
                         getX(),
-                        getY() + 17 * scale - 1,
+                        getY() + scale * (height + 1) - 1,
                         getX() + scale,
-                        getY() + 17 * scale,
+                        getY() + scale * (height + 1),
                         0xffff0000
                 );
                 // right
@@ -181,7 +184,7 @@ public class CreateCapeScreen extends BetterScreen {
                         getX() + scale - 1,
                         getY() + scale + 1,
                         getX() + scale,
-                        getY() + scale * 17 - 1,
+                        getY() + scale * (height + 1) - 1,
                         0xffff0000
                 );
 
@@ -191,7 +194,7 @@ public class CreateCapeScreen extends BetterScreen {
                 graphics.fill(
                         getX() + scale,
                         getY() + scale,
-                        getX() + scale * 11,
+                        getX() + scale * (width + 1),
                         getY() + scale + 1,
                         0xffffff00
                 );
@@ -200,89 +203,89 @@ public class CreateCapeScreen extends BetterScreen {
                         getX() + scale,
                         getY() + scale + 1,
                         getX() + scale + 1,
-                        getY() + scale * 17 - 1,
+                        getY() + scale * (height + 1) - 1,
                         0xffffff00
                 );
                 // bottom
                 graphics.fill(
                         getX() + scale,
-                        getY() + scale * 17 - 1,
-                        getX() + scale * 11,
-                        getY() + scale * 17,
+                        getY() + scale * (height + 1) - 1,
+                        getX() + scale * (width + 1),
+                        getY() + scale * (height + 1),
                         0xffffff00
                 );
                 // right
                 graphics.fill(
-                        getX() + scale * 11 - 1,
+                        getX() + scale * (width + 1) - 1,
                         getY() + scale + 1,
-                        getX() + scale * 11,
-                        getY() + scale * 17 - 1,
+                        getX() + scale * (width + 1),
+                        getY() + scale * (height + 1) - 1,
                         0xffffff00
                 );
 
                 // top
                 graphics.fill(
-                        getX() + scale * 11,
+                        getX() + scale * (width + 1),
                         getY() + scale,
-                        getX() + scale * 12,
+                        getX() + scale * (width + 2),
                         getY() + scale + 1,
                         0xffff00ff
                 );
                 // left
                 graphics.fill(
-                        getX() + scale * 11,
+                        getX() + scale * (width + 1),
                         getY() + scale + 1,
-                        getX() + scale * 11 + 1,
-                        getY() + scale * 17 - 1,
+                        getX() + scale * (width + 1) + 1,
+                        getY() + scale * (height + 1) - 1,
                         0xffff00ff
                 );
                 // bottom
                 graphics.fill(
-                        getX() + scale * 11,
-                        getY() + scale * 17 - 1,
-                        getX() + scale * 12,
-                        getY() + scale * 17,
+                        getX() + scale * (width + 1),
+                        getY() + scale * (height + 1) - 1,
+                        getX() + scale * (width + 2),
+                        getY() + scale * (height + 1),
                         0xffff00ff
                 );
                 // right
                 graphics.fill(
-                        getX() + scale * 12 - 1,
+                        getX() + scale * (width + 2) - 1,
                         getY() + scale + 1,
-                        getX() + scale * 12,
-                        getY() + scale * 17 - 1,
+                        getX() + scale * (width + 2),
+                        getY() + scale * (height + 1) - 1,
                         0xffff00ff
                 );
 
                 // top
                 graphics.fill(
-                        getX() + scale * 12,
+                        getX() + scale * (width + 2),
                         getY() + scale,
-                        getX() + scale * 22,
+                        getX() + scale * (width * 2 + 2),
                         getY() + scale + 1,
                         0xff00ffff
                 );
                 // left
                 graphics.fill(
-                        getX() + scale * 12,
+                        getX() + scale * (width + 2),
                         getY() + scale + 1,
-                        getX() + scale * 12 + 1,
-                        getY() + scale * 17 - 1,
+                        getX() + scale * (width + 2) + 1,
+                        getY() + scale * (height + 1) - 1,
                         0xff00ffff
                 );
                 // bottom
                 graphics.fill(
-                        getX() + scale * 12,
-                        getY() + scale * 17 - 1,
-                        getX() + scale * 22,
-                        getY() + scale * 17,
+                        getX() + scale * (width + 2),
+                        getY() + scale * (height + 1) - 1,
+                        getX() + scale * (width * 2 + 2),
+                        getY() + scale * (height + 1),
                         0xff00ffff
                 );
                 // right
                 graphics.fill(
-                        getX() + scale * 22 - 1,
+                        getX() + scale * (width * 2 + 2) - 1,
                         getY() + scale + 1,
-                        getX() + scale * 22,
-                        getY() + scale * 17 - 1,
+                        getX() + scale * (width * 2 + 2),
+                        getY() + scale * (height + 1) - 1,
                         0xff00ffff
                 );
             }
