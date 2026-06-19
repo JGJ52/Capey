@@ -360,10 +360,12 @@ public class CreateCapeScreen extends BetterScreen {
                 Component.empty()
         ));
         hex.setResponder(s -> {
-            int h = 0;
+            int h;
             try {
                 h = Integer.parseInt(s, 16);
-            } catch (NumberFormatException ignored) {}
+            } catch (NumberFormatException ignored) {
+                return;
+            }
 
             if ((h & 0xFF000000) == 0) {
                 h |= 0xFF000000;
