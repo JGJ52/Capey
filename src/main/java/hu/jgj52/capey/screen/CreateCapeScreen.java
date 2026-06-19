@@ -14,6 +14,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -300,6 +301,8 @@ public class CreateCapeScreen extends BetterScreen {
         AtomicInteger g = new AtomicInteger(255);
         AtomicInteger b = new AtomicInteger(255);
 
+        List<Slider> sliders = new ArrayList<>();
+
         int i = -1;
         for (AtomicInteger integer : List.of(a, r, g, b)) {
             i++;
@@ -313,13 +316,14 @@ public class CreateCapeScreen extends BetterScreen {
                     font
             ));
 
-            widget(new AbstractSliderButton(
+            sliders.add(widget(new Slider(
                     12 + font.width(component),
                     40 + font.lineHeight * 2 * (i + 1),
                     80,
                     font.lineHeight + 2,
                     Component.literal(String.valueOf(integer.get())),
-                    (double) integer.get() / 255
+                    (double) integer.get() / 255,
+                    integer
             ) {
                 @Override
                 protected void updateMessage() {
@@ -335,7 +339,58 @@ public class CreateCapeScreen extends BetterScreen {
                             (a.get() << 24) | (r.get() << 16) | (g.get() << 8) | b.get()
                     );
                 }
-            });
+            }));
+        }
+
+        Component component = Component.literal("#");
+        widget(new StringWidget(
+                10,
+                42 + font.lineHeight * 10,
+                font.width(component),
+                font.lineHeight,
+                component,
+                font
+        ));
+        EditBox hex = widget(new EditBox(
+                font,
+                12 + font.width(component),
+                40 + font.lineHeight * 10,
+                80,
+                font.lineHeight + 2,
+                Component.empty()
+        ));
+        hex.setResponder(s -> {
+            int h = 0;
+            try {
+                h = Integer.parseInt(s, 16);
+            } catch (NumberFormatException ignored) {}
+
+            if ((h & 0xFF000000) == 0) {
+                h |= 0xFF000000;
+            }
+
+            a.set((h >> 24) & 0xFF);
+            r.set((h >> 16) & 0xFF);
+            g.set((h >> 8) & 0xFF);
+            b.set(h & 0xFF);
+            sliders.forEach(slider -> slider.setValue((double) slider.integer().get() / 255));
+        });
+    }
+
+    private static abstract class Slider extends AbstractSliderButton {
+        private final AtomicInteger integer;
+        public Slider(int x, int y, int width, int height, Component message, double initialValue, AtomicInteger integer) {
+            super(x, y, width, height, message, initialValue);
+            this.integer = integer;
+        }
+
+        @Override
+        public void setValue(double newValue) {
+            super.setValue(newValue);
+        }
+
+        public AtomicInteger integer() {
+            return integer;
         }
     }
 
