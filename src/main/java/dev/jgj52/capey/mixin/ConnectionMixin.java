@@ -1,4 +1,4 @@
-package hu.jgj52.capey.mixin;
+package dev.jgj52.capey.mixin;
 
 import io.netty.channel.ChannelHandlerContext;
 import net.minecraft.client.Minecraft;
@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.net.InetSocketAddress;
 
-import static hu.jgj52.capey.Capey.tokens;
+import static dev.jgj52.capey.Capey.tokens;
 
 @Mixin(Connection.class)
 public class ConnectionMixin {

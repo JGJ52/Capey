@@ -1,4 +1,4 @@
-package hu.jgj52.capey.types;
+package dev.jgj52.capey.types;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;

@@ -1,9 +1,8 @@
-package hu.jgj52.capey.config;
+package dev.jgj52.capey.config;
 
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
-import hu.jgj52.capey.screen.ConfigScreen;
-import net.minecraft.network.chat.Component;
+import dev.jgj52.capey.screen.ConfigScreen;
 
 public class ModMenu implements ModMenuApi {
     @Override

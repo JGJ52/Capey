@@ -1,6 +1,6 @@
-package hu.jgj52.capey.config; // idk why put this here
+package dev.jgj52.capey.config; // idk why put this here
 
-import hu.jgj52.capey.types.Player;
+import dev.jgj52.capey.types.Player;
 
 import java.net.URI;
 import java.net.http.HttpClient;

@@ -1,4 +1,4 @@
-package hu.jgj52.capey.widget;
+package dev.jgj52.capey.widget;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -6,6 +6,10 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
 
 public class BoardWidget extends AbstractWidget {
     public static final int scale = 4;
@@ -17,6 +21,22 @@ public class BoardWidget extends AbstractWidget {
     private int color = 0xffffffff;
     public void color(int color) {
         this.color = color;
+    }
+    public int color() {
+        return color;
+    }
+
+    private final List<Consumer<Integer>> onDraw = new ArrayList<>();
+    private void draw(int pixel) {
+        pixels[pixel] = color;
+        onDraw.forEach(onDraw -> onDraw.accept(pixel));
+    }
+    public void onDraw(Consumer<Integer> onDraw) {
+        this.onDraw.add(onDraw);
+    }
+
+    public int getColor(int pixel) {
+        return pixels[pixel];
     }
 
     public BoardWidget(int x, int y, int width, int height) {
@@ -64,7 +84,7 @@ public class BoardWidget extends AbstractWidget {
         int insideX = ((int) event.x() - getX()) / scale;
         int insideY = ((int) event.y() - getY()) / scale;
 
-        pixels[insideX + insideY * w] = color;
+        draw(insideX + insideY * w);
 
         return true;
     }
@@ -114,7 +134,7 @@ public class BoardWidget extends AbstractWidget {
 
         while (true) {
             if (x0 >= 0 && y0 >= 0 && x0 < w && y0 < h) {
-                pixels[x0 + y0 * w] = color;
+                draw(x0 + y0 * w);
             }
 
             if (x0 == x1 && y0 == y1) break;

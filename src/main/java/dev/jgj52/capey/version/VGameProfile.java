@@ -1,4 +1,4 @@
-package hu.jgj52.capey.version;
+package dev.jgj52.capey.version;
 
 import com.mojang.authlib.GameProfile;
 import net.minecraft.network.chat.Component;

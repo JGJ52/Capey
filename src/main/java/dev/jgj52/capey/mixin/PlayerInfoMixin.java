@@ -1,7 +1,7 @@
-package hu.jgj52.capey.mixin;
+package dev.jgj52.capey.mixin;
 
-import hu.jgj52.capey.types.Cape;
-import hu.jgj52.capey.types.Player;
+import dev.jgj52.capey.types.Cape;
+import dev.jgj52.capey.types.Player;
 import net.minecraft.client.multiplayer.PlayerInfo;
 //? >= 1.21.9 {
 import net.minecraft.world.entity.player.PlayerSkin;
@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import static hu.jgj52.capey.version.VGameProfile.getUUID;
+import static dev.jgj52.capey.version.VGameProfile.getUUID;
 
 @Mixin(PlayerInfo.class)
 public class PlayerInfoMixin {

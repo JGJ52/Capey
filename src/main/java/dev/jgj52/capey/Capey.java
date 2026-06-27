@@ -1,8 +1,8 @@
-package hu.jgj52.capey;
+package dev.jgj52.capey;
 
-import hu.jgj52.capey.config.WebSocket;
-import hu.jgj52.capey.types.Cape;
-import hu.jgj52.capey.types.Config;
+import dev.jgj52.capey.config.WebSocket;
+import dev.jgj52.capey.types.Cape;
+import dev.jgj52.capey.types.Config;
 import net.fabricmc.api.ModInitializer;
 
 public class Capey implements ModInitializer {

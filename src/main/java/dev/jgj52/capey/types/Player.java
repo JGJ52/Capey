@@ -1,8 +1,7 @@
-package hu.jgj52.capey.types;
+package dev.jgj52.capey.types;
 
 import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.yggdrasil.ProfileResult;
-import hu.jgj52.capey.Capey;
+import dev.jgj52.capey.Capey;
 import net.minecraft.client.Minecraft;
 //? >= 1.21.9 {
 import net.minecraft.world.entity.player.PlayerSkin;
@@ -18,7 +17,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
 public class Player {

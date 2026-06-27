@@ -11,13 +11,13 @@
   "environment": "client",
   "entrypoints": {
     "client": [
-      "hu.jgj52.capey.client.CapeyClient"
+      "dev.jgj52.capey.client.CapeyClient"
     ],
     "main": [
-      "hu.jgj52.capey.Capey"
+      "dev.jgj52.capey.Capey"
     ],
     "modmenu": [
-      "hu.jgj52.capey.config.ModMenu"
+      "dev.jgj52.capey.config.ModMenu"
     ]
   },
   "mixins": [

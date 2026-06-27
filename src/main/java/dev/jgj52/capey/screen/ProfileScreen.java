@@ -1,12 +1,11 @@
-package hu.jgj52.capey.screen;
+package dev.jgj52.capey.screen;
 
 import com.google.common.net.HttpHeaders;
-import com.mojang.authlib.GameProfile;
-import hu.jgj52.capey.Capey;
-import hu.jgj52.capey.types.Cape;
-import hu.jgj52.capey.types.Player;
-import hu.jgj52.capey.version.VGameProfile;
-import hu.jgj52.capey.widget.PlayerWithCapeWidget;
+import dev.jgj52.capey.Capey;
+import dev.jgj52.capey.types.Cape;
+import dev.jgj52.capey.types.Player;
+import dev.jgj52.capey.version.VGameProfile;
+import dev.jgj52.capey.widget.PlayerWithCapeWidget;
 import hu.jgj52.screenapi.screen.BetterScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.User;
@@ -21,7 +20,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.PlayerSkin;
 import org.jspecify.annotations.NonNull;
 
-import java.awt.*;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -34,8 +32,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
-import static hu.jgj52.capey.version.VGameProfile.getName;
-import static hu.jgj52.capey.version.VScreen.setScreen;
+import static dev.jgj52.capey.version.VGameProfile.getName;
+import static dev.jgj52.capey.version.VScreen.setScreen;
 
 public class ProfileScreen extends BetterScreen {
     private static final Minecraft mc = Minecraft.getInstance();

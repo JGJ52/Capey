@@ -1,4 +1,4 @@
-package hu.jgj52.capey.widget;
+package dev.jgj52.capey.widget;
 
 import com.google.gson.JsonPrimitive;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -17,7 +17,7 @@ import org.joml.Vector3f;
 
 import java.util.function.Supplier;
 
-import static hu.jgj52.capey.Capey.config;
+import static dev.jgj52.capey.Capey.config;
 
 public class PlayerWithCapeWidget extends AbstractWidget {
     public static class FakePlayer {

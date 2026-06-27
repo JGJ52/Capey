@@ -1,4 +1,4 @@
-package hu.jgj52.capey.types;
+package dev.jgj52.capey.types;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -158,10 +158,10 @@ public class Cape {
         };
     }
 
-    public Supplier<PlayerSkin> emptySkin() {
+    public static Supplier<PlayerSkin> emptySkin(Identifier identifier) {
         return () -> new PlayerSkin(
                 new TextureImpl(Identifier.fromNamespaceAndPath("capey", "skins/empty.png")),
-                new TextureImpl(getIdentifier()), new TextureImpl(getIdentifier()),
+                new TextureImpl(identifier), new TextureImpl(identifier),
                 PlayerModelType.SLIM,
                 false
         );

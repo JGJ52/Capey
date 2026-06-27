@@ -1,4 +1,4 @@
-package hu.jgj52.capey.client;
+package dev.jgj52.capey.client;
 
 import net.fabricmc.api.ClientModInitializer;
 

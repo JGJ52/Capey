@@ -1,4 +1,4 @@
-package hu.jgj52.capey.version;
+package dev.jgj52.capey.version;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;

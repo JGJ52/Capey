@@ -1,4 +1,4 @@
-package hu.jgj52.capey.screen;
+package dev.jgj52.capey.screen;
 
 import net.minecraft.client.User;
 import net.minecraft.client.gui.Font;
@@ -7,7 +7,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.chat.Component;
 
-import static hu.jgj52.capey.version.VScreen.setScreen;
+import static dev.jgj52.capey.version.VScreen.setScreen;
 
 public class MyProfileScreen extends ProfileScreen {
     public MyProfileScreen(Screen parent, AbstractClientPlayer player) {

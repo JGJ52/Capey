@@ -1,9 +1,11 @@
-package hu.jgj52.capey.screen;
+package dev.jgj52.capey.screen;
 
-import hu.jgj52.capey.types.Cape;
-import hu.jgj52.capey.widget.BoardWidget;
-import hu.jgj52.capey.widget.PlayerWithCapeWidget;
+import com.mojang.blaze3d.platform.NativeImage;
+import dev.jgj52.capey.types.Cape;
+import dev.jgj52.capey.widget.BoardWidget;
+import dev.jgj52.capey.widget.PlayerWithCapeWidget;
 import hu.jgj52.screenapi.screen.BetterScreen;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractSliderButton;
@@ -11,21 +13,26 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static hu.jgj52.capey.version.VScreen.setScreen;
+import static dev.jgj52.capey.version.VScreen.setScreen;
 
 public class CreateCapeScreen extends BetterScreen {
+    private static final Minecraft mc = Minecraft.getInstance();
+
     private final Screen parent;
     public CreateCapeScreen(Screen parent) {
         this.parent = parent;
     }
+
+    private DynamicTexture texture;
 
     @Override
     protected int getScrollSpeed() {
@@ -50,7 +57,7 @@ public class CreateCapeScreen extends BetterScreen {
             height - 140,
             70,
             80,
-            Cape.of(UUID.fromString("e36e5e41-4fd8-48f5-a720-2f912ca97a25")).emptySkin()
+            Cape.emptySkin(Identifier.fromNamespaceAndPath("capey", "preview"))
         ), "preview", true);
         cw.offset(0.85f);
         widget(
@@ -79,11 +86,14 @@ public class CreateCapeScreen extends BetterScreen {
             ), null, true);
         }
 
+        int W = 64;
+        int H = 32;
+
         BoardWidget board = widget(new BoardWidget(
-                width / 2 - 64 * BoardWidget.scale / 2,
+                width / 2 - W * BoardWidget.scale / 2,
                 60,
-                64,
-                32
+                W,
+                H
         ) {
             @Override
             protected void extractWidgetRenderState(@NotNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
@@ -296,6 +306,24 @@ public class CreateCapeScreen extends BetterScreen {
             }
         }, "board", true);
 
+        Component componentH = Component.literal("#");
+        widget(new StringWidget(
+                10,
+                42 + font.lineHeight * 10,
+                font.width(componentH),
+                font.lineHeight,
+                componentH,
+                font
+        ));
+        EditBox hex = widget(new EditBox(
+                font,
+                12 + font.width(componentH),
+                40 + font.lineHeight * 10,
+                80,
+                font.lineHeight + 2,
+                Component.empty()
+        ));
+
         AtomicInteger a = new AtomicInteger(255);
         AtomicInteger r = new AtomicInteger(255);
         AtomicInteger g = new AtomicInteger(255);
@@ -338,31 +366,18 @@ public class CreateCapeScreen extends BetterScreen {
                     board.color(
                             (a.get() << 24) | (r.get() << 16) | (g.get() << 8) | b.get()
                     );
+                    if (!hex.isFocused()) hex.setValue(
+                            a.get() == 255
+                            ? String.format("%06x", board.color() & 0xFFFFFF)
+                            : String.format("%08x", board.color())
+                    );
                 }
             }));
         }
-
-        Component component = Component.literal("#");
-        widget(new StringWidget(
-                10,
-                42 + font.lineHeight * 10,
-                font.width(component),
-                font.lineHeight,
-                component,
-                font
-        ));
-        EditBox hex = widget(new EditBox(
-                font,
-                12 + font.width(component),
-                40 + font.lineHeight * 10,
-                80,
-                font.lineHeight + 2,
-                Component.empty()
-        ));
         hex.setResponder(s -> {
             int h;
             try {
-                h = Integer.parseInt(s, 16);
+                h = (int) Long.parseLong(s, 16);
             } catch (NumberFormatException ignored) {
                 return;
             }
@@ -376,6 +391,11 @@ public class CreateCapeScreen extends BetterScreen {
             g.set((h >> 8) & 0xFF);
             b.set(h & 0xFF);
             sliders.forEach(slider -> slider.setValue((double) slider.integer().get() / 255));
+        });
+
+        preview(board, W, H);
+        board.onDraw(pixel -> {
+            preview(board, W, H);
         });
     }
 
@@ -396,8 +416,29 @@ public class CreateCapeScreen extends BetterScreen {
         }
     }
 
+    private void preview(BoardWidget board, int w, int h) {
+        if (texture != null) texture.close();
+        try (NativeImage image = new NativeImage(w, h, false)) {
+            for (int y = 0; y < h; y++) {
+                for (int x = 0; x < w; x++) {
+                    image.setPixel(x, y, board.getColor(y * w + x));
+                }
+            }
+            texture = new DynamicTexture(() -> "capey:preview", image);
+            mc.getTextureManager().register(
+                    Identifier.fromNamespaceAndPath("capey", "preview"),
+                    texture
+            );
+            texture.upload();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     public void onClose() {
+        if (texture != null) texture.close();
+        mc.getTextureManager().release(Identifier.fromNamespaceAndPath("capey", "preview"));
         setScreen(parent);
     }
 }
