@@ -1,6 +1,8 @@
 package dev.jgj52.capey.screen;
 
+import com.google.common.net.HttpHeaders;
 import com.mojang.blaze3d.platform.NativeImage;
+import dev.jgj52.capey.Capey;
 import dev.jgj52.capey.types.Cape;
 import dev.jgj52.capey.widget.BoardWidget;
 import dev.jgj52.capey.widget.PlayerWithCapeWidget;
@@ -18,14 +20,24 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static dev.jgj52.capey.version.VScreen.setScreen;
 
 public class CreateCapeScreen extends BetterScreen {
     private static final Minecraft mc = Minecraft.getInstance();
+    private static final HttpClient client = HttpClient.newHttpClient();
+    private static final ExecutorService fetcher = Executors.newVirtualThreadPerTaskExecutor();
 
     private final Screen parent;
     public CreateCapeScreen(Screen parent) {
@@ -323,6 +335,7 @@ public class CreateCapeScreen extends BetterScreen {
                 font.lineHeight + 2,
                 Component.empty()
         ));
+        hex.setValue("ffffff");
 
         AtomicInteger a = new AtomicInteger(255);
         AtomicInteger r = new AtomicInteger(255);
@@ -362,9 +375,13 @@ public class CreateCapeScreen extends BetterScreen {
                 protected void applyValue() {
                     int val = (int) (value * 255);
                     integer.set(val);
+                    int A = Math.clamp(a.get(), 0, 255);
+                    int R = Math.clamp(r.get(), 0, 255);
+                    int G = Math.clamp(g.get(), 0, 255);
+                    int B = Math.clamp(b.get(), 0, 255);
 
                     board.color(
-                            (a.get() << 24) | (r.get() << 16) | (g.get() << 8) | b.get()
+                            (A << 24) | (R << 16) | (G << 8) | B
                     );
                     if (!hex.isFocused()) hex.setValue(
                             a.get() == 255
@@ -382,10 +399,6 @@ public class CreateCapeScreen extends BetterScreen {
                 return;
             }
 
-            if ((h & 0xFF000000) == 0) {
-                h |= 0xFF000000;
-            }
-
             a.set((h >> 24) & 0xFF);
             r.set((h >> 16) & 0xFF);
             g.set((h >> 8) & 0xFF);
@@ -394,9 +407,81 @@ public class CreateCapeScreen extends BetterScreen {
         });
 
         preview(board, W, H);
-        board.onDraw(pixel -> {
-            preview(board, W, H);
-        });
+        board.onDraw(pixel -> preview(board, W, H));
+
+        EditBox name = widget(new EditBox(
+                font,
+                width - 90,
+                height - 60,
+                80,
+                20,
+                Component.empty()
+        ));
+        name.setValue("Cape name");
+
+        widget(
+                Button.builder(
+                                Component.translatable("capey.config.create.upload"),
+                                button -> {
+                                    try (NativeImage image = new NativeImage(W, H, false)) {
+                                        for (int y = 0; y < H; y++) {
+                                            for (int x = 0; x < W; x++) {
+                                                image.setPixel(x, y, board.getColor(y * W + x));
+                                            }
+                                        }
+                                        Path temp = Files.createTempFile("capey", ".png");
+                                        image.writeToFile(temp);
+
+                                        byte[] png = Files.readAllBytes(temp);
+                                        Files.deleteIfExists(temp);
+
+                                        fetcher.submit(() -> {
+                                            try {
+                                                String nowUUID = mc.player != null ? mc.player.getUUID().toString() : mc.getUser().getProfileId().toString();
+                                                HttpRequest request = HttpRequest.newBuilder()
+                                                        .uri(new URI("https://api.capey.app/v1/cape"))
+                                                        .POST(
+                                                                HttpRequest.BodyPublishers.ofByteArray(png)
+                                                        )
+                                                        .header(
+                                                                HttpHeaders.AUTHORIZATION,
+                                                                Capey.tokens.get().has(nowUUID)
+                                                                        ? Capey.tokens.get().get(nowUUID).getAsString()
+                                                                        : ""
+                                                        )
+                                                        .header(
+                                                                HttpHeaders.CONTENT_TYPE,
+                                                                "image/png"
+                                                        )
+                                                        .header(
+                                                                "X-Cape-Name",
+                                                                name.getValue()
+                                                        )
+                                                        .build();
+
+                                                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+                                                if (response.statusCode() != 200) {
+                                                    System.out.println(response.statusCode());
+                                                    System.out.println(response.body());
+                                                } else {
+                                                    Cape.all(true);
+                                                    mc.execute(this::onClose);
+                                                }
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+                                        });
+                                    } catch (Exception e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                }
+                        )
+                        .bounds(width - 90, height - 30, 80, 20)
+                        .build(),
+                "upload",
+                true
+        );
     }
 
     private static abstract class Slider extends AbstractSliderButton {
@@ -442,3 +527,4 @@ public class CreateCapeScreen extends BetterScreen {
         setScreen(parent);
     }
 }
+// why is this so long
