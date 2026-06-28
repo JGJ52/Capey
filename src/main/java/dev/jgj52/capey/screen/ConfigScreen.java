@@ -1,6 +1,7 @@
 package dev.jgj52.capey.screen;
 
 import com.google.common.net.HttpHeaders;
+import com.google.gson.JsonObject;
 import dev.jgj52.capey.Capey;
 import dev.jgj52.capey.types.Cape;
 import dev.jgj52.capey.types.Player;
@@ -52,86 +53,24 @@ public class ConfigScreen extends BetterScreen {
 
     }
 
+    private int perRow;
+    private int visCol;
+    private UUID localUUID;
+    private Player local;
+    private Supplier<Cape> selected;
+    List<PlayerWithCapeWidget> all;
+    private List<JsonObject> capes;
+
     @Override
     protected void createWidgets(Font font) {
-        AtomicInteger offset = new AtomicInteger();
-        int perRow = mc.getWindow().getGuiScaledWidth() / 80 - 2;
-        UUID localUUID = mc.player != null ? mc.player.getUUID() : mc.getUser().getProfileId();
-        Player local = Player.of(localUUID);
-        Supplier<Cape> selected = local::getCape;
-        List<PlayerWithCapeWidget> all = new ArrayList<>();
-        Cape.all(false).forEach(capeO -> {
-            Player player = Player.of(UUID.fromString(capeO.get("uploader").getAsString()));
-            Cape cape = Cape.of(UUID.fromString(capeO.get("uuid").getAsString()));
-            Supplier<PlayerSkin> skinWithCape = cape.fromSkin(player.getSkin());
-
-            int i = offset.getAndIncrement();
-            all.add(widget(new PlayerWithCapeWidget(
-                    (i % perRow) * 80 + (width - perRow * 80) / 2,
-                    (i / perRow) * 100 + 50,
-                    70,
-                    100,
-                    skinWithCape
-            ) {
-                @Override
-                protected void extractWidgetRenderState(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
-                    super.extractWidgetRenderState(graphics, mouseX, mouseY, a);
-
-                    if (selected.get() == cape && !background()) {
-                        all.forEach(w -> w.background(false));
-                        background(true);
-                    } else if (selected.get() == null && background()) {
-                        background(false);
-                    }
-                }
-
-                @Override
-                public void onClick(@NonNull MouseButtonEvent event, boolean doubleClick) {
-                    String nowUUID = localUUID.toString();
-                    String capeUUID = cape.getUUID().toString();
-                    if (background()) Capey.local.get().remove(nowUUID);
-                    else Capey.local.get().addProperty(nowUUID, capeUUID);
-                    Capey.local.save();
-                    local.reFetch();
-                    fetcher.submit(() -> {
-                        try {
-                            HttpRequest request = HttpRequest.newBuilder()
-                                    .uri(new URI("https://api.capey.app/v1/player"))
-                                    .POST(
-                                            background()
-                                                    ? HttpRequest.BodyPublishers.noBody()
-                                                    : HttpRequest.BodyPublishers.ofString(capeUUID)
-                                    )
-                                    .header(
-                                            HttpHeaders.AUTHORIZATION,
-                                            Capey.tokens.get().has(nowUUID)
-                                                    ? Capey.tokens.get().get(nowUUID).getAsString()
-                                                    : ""
-                                    )
-                                    .build();
-
-                            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-                            if (response.statusCode() != 200) {
-                                throw new RuntimeException(response.body());
-                            }
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
-                    });
-                }
-            }));
-            Component name = Component.literal(capeO.get("name").getAsString());
-            int add = font.width(name) > 70 ? 2 : 35 - font.width(name) / 2;
-            widget(new StringWidget(
-                    (i % perRow) * 80 + (width - perRow * 80) / 2 + add,
-                    (i / perRow) * 100 + 90 + 50,
-                    70,
-                    font.lineHeight,
-                    name,
-                    font
-            ));
-        });
+        perRow = mc.getWindow().getGuiScaledWidth() / 80 - 2;
+        visCol = mc.getWindow().getGuiScaledHeight() / 100;
+        localUUID = mc.player != null ? mc.player.getUUID() : mc.getUser().getProfileId();
+        local = Player.of(localUUID);
+        selected = local::getCape;
+        all = new ArrayList<>();
+        capes = Cape.all(false);
+        capes.subList(all.size(), Math.min(visCol * perRow + all.size(), capes.size())).forEach(this::addCape);
         widget(
                 Button.builder(
                         Component.translatable("capey.config.main.elytra"),
@@ -147,7 +86,7 @@ public class ConfigScreen extends BetterScreen {
                                 Component.translatable("capey.config.main.reload"),
                                 button ->
                                     CompletableFuture.supplyAsync(() ->
-                                        Cape.all(true)).thenAccept(capes ->
+                                        Cape.all(true)).thenAccept(capeList ->
                                         mc.execute(this::onClose)
                                     )
                         )
@@ -182,6 +121,91 @@ public class ConfigScreen extends BetterScreen {
                     font
             ), null, true);
         }
+    }
+
+    private void addCape(JsonObject capeO) {
+        Player player = Player.of(UUID.fromString(capeO.get("uploader").getAsString()));
+        Cape cape = Cape.of(UUID.fromString(capeO.get("uuid").getAsString()));
+        Supplier<PlayerSkin> skinWithCape = cape.fromSkin(player.getSkin());
+
+        int i = all.size();
+        all.add(widget(new PlayerWithCapeWidget(
+                (i % perRow) * 80 + (width - perRow * 80) / 2,
+                (i / perRow) * 100 + 50 + getScrollOffset(),
+                70,
+                100,
+                skinWithCape
+        ) {
+            @Override
+            protected void extractWidgetRenderState(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+                super.extractWidgetRenderState(graphics, mouseX, mouseY, a);
+
+                if (selected.get() == cape && !background()) {
+                    all.forEach(w -> w.background(false));
+                    background(true);
+                } else if (selected.get() == null && background()) {
+                    background(false);
+                }
+            }
+
+            @Override
+            public void onClick(@NonNull MouseButtonEvent event, boolean doubleClick) {
+                String nowUUID = localUUID.toString();
+                String capeUUID = cape.getUUID().toString();
+                if (background()) Capey.local.get().remove(nowUUID);
+                else Capey.local.get().addProperty(nowUUID, capeUUID);
+                Capey.local.save();
+                local.reFetch();
+                fetcher.submit(() -> {
+                    try {
+                        HttpRequest request = HttpRequest.newBuilder()
+                                .uri(new URI("https://api.capey.app/v1/player"))
+                                .POST(
+                                        background()
+                                                ? HttpRequest.BodyPublishers.noBody()
+                                                : HttpRequest.BodyPublishers.ofString(capeUUID)
+                                )
+                                .header(
+                                        HttpHeaders.AUTHORIZATION,
+                                        Capey.tokens.get().has(nowUUID)
+                                                ? Capey.tokens.get().get(nowUUID).getAsString()
+                                                : ""
+                                )
+                                .build();
+
+                        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+                        if (response.statusCode() != 200) {
+                            throw new RuntimeException(response.body());
+                        }
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+            }
+        }));
+        Component name = Component.literal(capeO.get("name").getAsString());
+        int add = font.width(name) > 70 ? 2 : 35 - font.width(name) / 2;
+        widget(new StringWidget(
+                (i % perRow) * 80 + (width - perRow * 80) / 2 + add,
+                (i / perRow) * 100 + 90 + 50 + getScrollOffset(),
+                70,
+                font.lineHeight,
+                name,
+                font
+        ));
+    }
+
+    @Override
+    public boolean mouseScrolled(double x, double y, double scrollX, double scrollY) {
+        int contentBottom = all.size() / perRow * 100;
+
+        int viewportBottom = height - getScrollOffset();
+
+        if (contentBottom - viewportBottom < 200) {
+            capes.subList(all.size(), Math.min(visCol * perRow + all.size(), capes.size())).forEach(this::addCape);
+        }
+        return super.mouseScrolled(x, y, scrollX, scrollY);
     }
 
     @Override

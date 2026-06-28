@@ -4,6 +4,7 @@
   "capey.config.main.level": "You need to be at least once in a world since game start to be able to toggle elytra.",
   "capey.config.main.elytra": "Toggle elytra",
   "capey.config.my.create": "Create cape",
+  "capey.config.my.remaining": "%s capes used of %s",
   "capey.config.create.upload": "Upload cape",
   "capey.message.token.your": "Your Capey token is:",
   "capey.message.token.share": "Do NOT share this with anyone!",

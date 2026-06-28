@@ -61,6 +61,8 @@ public class ProfileScreen extends BetterScreen {
 
     }
 
+    protected int used = 0;
+
     @Override
     protected void createWidgets(Font font) {
         Player cplayer = Player.of(player.getUUID());
@@ -163,6 +165,7 @@ public class ProfileScreen extends BetterScreen {
                     name,
                     font
             ));
+            used++;
         });
         widget(
                 Button.builder(
