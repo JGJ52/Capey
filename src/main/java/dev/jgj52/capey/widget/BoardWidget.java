@@ -2,7 +2,9 @@ package dev.jgj52.capey.widget;
 
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.input.MouseButtonEvent;
+//? >= 1.21.9 {
+/*import net.minecraft.client.input.MouseButtonEvent;
+*///? }
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
@@ -107,9 +109,15 @@ public class BoardWidget extends AbstractWidget {
     }
 
     @Override
-    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
-        int insideX = ((int) event.x() - getX()) / scale;
-        int insideY = ((int) event.y() - getY()) / scale;
+    //? >= 1.21.9 {
+    /*public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        double x = event.x();
+        double y = event.y();
+    *///? } else {
+    public boolean mouseClicked(double x, double y, int i) {
+    //? }
+        int insideX = ((int) x - getX()) / scale;
+        int insideY = ((int) y - getY()) / scale;
 
         draw(insideX + insideY * w);
 
@@ -120,15 +128,21 @@ public class BoardWidget extends AbstractWidget {
     private int lastY = -1;
 
     @Override
-    public boolean mouseDragged(MouseButtonEvent event, double dx, double dy) {
-        if (!isMouseOver(event.x(), event.y())) {
+    //? >= 1.21.9 {
+    /*public boolean mouseDragged(MouseButtonEvent event, double dx, double dy) {
+        double X = event.x();
+        double Y = event.y();
+    *///? } else {
+      public boolean mouseDragged(double X, double Y, int i, double dx, double dy) {
+    //? }
+        if (!isMouseOver(X, Y)) {
             lastX = -1;
             lastY = -1;
             return false;
         }
 
-        int x = ((int) event.x() - getX()) / scale;
-        int y = ((int) event.y() - getY()) / scale;
+        int x = ((int) X - getX()) / scale;
+        int y = ((int) Y - getY()) / scale;
 
         if (lastX != -1) {
             drawLine(lastX, lastY, x, y);
@@ -141,10 +155,22 @@ public class BoardWidget extends AbstractWidget {
     }
 
     @Override
-    public boolean mouseReleased(@NotNull MouseButtonEvent event) {
+    public boolean mouseReleased(
+            //? >= 1.21.9 {
+            /*@NotNull MouseButtonEvent event
+            *///? } else {
+            double x, double y, int i
+            //? }
+    ) {
         lastX = -1;
         lastY = -1;
-        return super.mouseReleased(event);
+        return super.mouseReleased(
+                //? >= 1.21.9 {
+                /*event
+                *///? } else {
+                x, y, i
+                //? }
+        );
     }
 
     // chatgpt code

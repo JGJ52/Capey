@@ -16,7 +16,7 @@ import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.URI;
@@ -61,6 +61,7 @@ public class CreateCapeScreen extends BetterScreen {
             //? }
             graphics, int i, int i1, float v
     ) {
+        super.render(graphics, i, i1, v);
         graphics.fill(
                 10,
                 height - 140,
@@ -70,6 +71,20 @@ public class CreateCapeScreen extends BetterScreen {
         );
     }
 
+    private static final
+    //? >= 1.21.11 {
+    /*Identifier
+     *///? } else {
+    ResourceLocation
+    //? }
+    previewId =
+    //? >= 1.21.11 {
+    /*Identifier
+     *///? } else {
+    ResourceLocation
+    //? }
+            .fromNamespaceAndPath("capey", "preview");
+
     @Override
     protected void createWidgets(Font font) {
         PlayerWithCapeWidget cw = widget(new PlayerWithCapeWidget(
@@ -77,7 +92,7 @@ public class CreateCapeScreen extends BetterScreen {
             height - 140,
             70,
             80,
-            Cape.emptySkin(Identifier.fromNamespaceAndPath("capey", "preview"))
+            Cape.emptySkin(previewId)
         ), "preview", true);
         cw.offset(0.85f);
         widget(
@@ -509,9 +524,15 @@ public class CreateCapeScreen extends BetterScreen {
             this.integer = integer;
         }
 
-        @Override
+        //? >= 1.21.11 {
+        /*@Override
+        *///? }
         public void setValue(double newValue) {
-            super.setValue(newValue);
+            //? >= 1.21.11 {
+            /*super.setValue(newValue)
+             *///? } else {
+            value = newValue;
+            //? }
         }
 
         public AtomicInteger integer() {
@@ -529,7 +550,12 @@ public class CreateCapeScreen extends BetterScreen {
             }
             texture = new DynamicTexture(() -> "capey:preview", image);
             mc.getTextureManager().register(
-                    Identifier.fromNamespaceAndPath("capey", "preview"),
+                    //? >= 1.21.11 {
+                    /*Identifier
+                     *///? } else {
+                    ResourceLocation
+                    //? }
+                            .fromNamespaceAndPath("capey", "preview"),
                     texture
             );
             texture.upload();
@@ -541,7 +567,7 @@ public class CreateCapeScreen extends BetterScreen {
     @Override
     public void onClose() {
         if (texture != null) texture.close();
-        mc.getTextureManager().release(Identifier.fromNamespaceAndPath("capey", "preview"));
+        mc.getTextureManager().release(previewId);
         setScreen(parent);
     }
 }

@@ -8,21 +8,21 @@ import java.util.UUID;
 public class VGameProfile {
     public static UUID getUUID(GameProfile profile) {
         return profile.
-                //? >= 1.21.10 {
-                        id
-                //? } else {
-                /*getId
-                 *///? }
+                //? >= 1.21.9 {
+                        /*id
+                *///? } else {
+                getId
+                 //? }
                         ();
     }
 
     public static String getName(GameProfile profile) {
         return profile.
-                //? >= 1.21.10 {
-                        name
-                //? } else {
-                /*getName
-                 *///? }
+                //? >= 1.21.9 {
+                /*name
+                *///? } else {
+                getName
+                 //? }
                         ();
     }
 

@@ -1,13 +1,18 @@
 package dev.jgj52.capey.widget;
 
 import com.google.gson.JsonPrimitive;
+import dev.jgj52.capey.version.VPlayerRenderState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+//? >= 1.21.9 {
+/*import net.minecraft.world.entity.player.PlayerSkin;
 import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+*///? } else {
+import net.minecraft.client.resources.PlayerSkin;
+//? }
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.player.PlayerSkin;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
@@ -19,6 +24,8 @@ import java.util.function.Supplier;
 import static dev.jgj52.capey.Capey.config;
 
 public class PlayerWithCapeWidget extends AbstractWidget {
+    private static final Minecraft mc = Minecraft.getInstance();
+
     public static class FakePlayer {
         private static ItemStack ely = ItemStack.EMPTY;
 
@@ -45,8 +52,8 @@ public class PlayerWithCapeWidget extends AbstractWidget {
             config.save();
         }
 
-        public AvatarRenderState state() {
-            AvatarRenderState state = new AvatarRenderState();
+        public VPlayerRenderState state() {
+            VPlayerRenderState state = new VPlayerRenderState();
             state.skin = skin.get();
             state.elytraRotX = 0.25f;
             state.elytraRotY = -0.01f;
@@ -137,10 +144,11 @@ public class PlayerWithCapeWidget extends AbstractWidget {
             );
         }
 
-        graphics.
+        //? >= 1.21.6 {
+        /*graphics.
                 //? >= 26.1 {
-                /*entity
-                 *///? } else {
+                /^entity
+                ^///? } else {
                 submitEntityRenderState
                 //? }
                         (
@@ -156,13 +164,22 @@ public class PlayerWithCapeWidget extends AbstractWidget {
                                 getX() + getWidth(),
                                 getY() + getHeight()
                         );
+
+        *///? } else {
+        // TODO: this
+        //? }
     }
 
     @Override
-    protected void onDrag(@NotNull MouseButtonEvent event, double dx, double dy) {
+    protected void onDrag(
+            //? >= 1.21.9 {
+            /*@NotNull MouseButtonEvent event,
+            *///? } else {
+            double x, double y,
+            //? }
+            double dx, double dy) {
         rotationX = Mth.clamp(this.rotationX - (float) -dy * 2.5f, 140.0f, 220.0f);
         rotationY += (float) dx * 2.5f;
-        super.onDrag(event, dx, dy);
     }
 
     @Override

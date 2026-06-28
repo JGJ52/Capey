@@ -13,10 +13,14 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.PlayerSkin;
+//? >= 1.21.9 {
+/*import net.minecraft.world.entity.player.PlayerSkin;
+import net.minecraft.client.input.MouseButtonEvent;
+*///? } else {
+import net.minecraft.client.resources.PlayerSkin;
+//? }
 import org.jetbrains.annotations.NotNull;
 
 import java.net.URI;
@@ -53,20 +57,6 @@ public class ProfileScreen extends BetterScreen {
     @Override
     protected int getScrollSpeed() {
         return 30;
-    }
-
-    @Override
-    public void render(
-            @NotNull
-            net.minecraft.client.gui.
-            //? >= 26.1 {
-            /*GuiGraphicsExtractor
-            *///? } else {
-            GuiGraphics
-             //? }
-            graphics, int i, int i1, float v
-    ) {
-
     }
 
     protected int used = 0;
@@ -137,7 +127,13 @@ public class ProfileScreen extends BetterScreen {
                 }
 
                 @Override
-                public void onClick(@NotNull MouseButtonEvent event, boolean doubleClick) {
+                public void onClick(
+                        //? >= 1.21.9 {
+                        /*@NotNull MouseButtonEvent event, boolean doubleClick
+                         *///? } else {
+                        double x, double y
+                        //? }
+                ) {
                     String nowUUID = tPlayer.getUUID().toString();
                     String capeUUID = cape.getUUID().toString();
                     if (background()) Capey.local.get().remove(nowUUID);
