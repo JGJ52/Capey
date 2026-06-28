@@ -166,7 +166,7 @@ public class PlayerWithCapeWidget extends AbstractWidget {
                         );
 
         *///? } else {
-        // TODO: this
+         //TODO: this
         //? }
     }
 
