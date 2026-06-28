@@ -392,6 +392,7 @@ public class CreateCapeScreen extends BetterScreen {
             }));
         }
         hex.setResponder(s -> {
+            if (!hex.isFocused()) return;
             int h;
             try {
                 h = (int) Long.parseLong(s, 16);
