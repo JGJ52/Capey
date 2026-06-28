@@ -4,10 +4,10 @@ import dev.jgj52.capey.types.Cape;
 import dev.jgj52.capey.types.Player;
 import net.minecraft.client.multiplayer.PlayerInfo;
 //? >= 1.21.9 {
-/*import net.minecraft.world.entity.player.PlayerSkin;
-*///? } else {
-import net.minecraft.client.resources.PlayerSkin;
-//? }
+import net.minecraft.world.entity.player.PlayerSkin;
+//? } else {
+/*import net.minecraft.client.resources.PlayerSkin;
+*///? }
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

@@ -6,10 +6,10 @@ import dev.jgj52.capey.Capey;
 import dev.jgj52.capey.version.VGameProfile;
 import net.minecraft.client.Minecraft;
 //? >= 1.21.9 {
-/*import net.minecraft.world.entity.player.PlayerSkin;
-*///? } else {
-import net.minecraft.client.resources.PlayerSkin;
-//? }
+import net.minecraft.world.entity.player.PlayerSkin;
+//? } else {
+/*import net.minecraft.client.resources.PlayerSkin;
+*///? }
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -78,27 +78,27 @@ public class Player {
     public Supplier<PlayerSkin> getSkin() {
         GameProfile profile = new GameProfile(uuid, "");
         //? < 1.21.9 {
-        AtomicReference<PlayerSkin> skin = new AtomicReference<>(mc.getSkinManager().getInsecureSkin(profile));
+        /*AtomicReference<PlayerSkin> skin = new AtomicReference<>(mc.getSkinManager().getInsecureSkin(profile));
         CompletableFuture.runAsync(() -> {
             ProfileResult withTexturesRes = mc.getMinecraftSessionService().fetchProfile(VGameProfile.getUUID(profile), true);
             if (withTexturesRes != null) {
                 GameProfile withTextures = withTexturesRes.profile();
-                //? > 1.21.3 {
+                //? >= 1.21.4 {
                 CompletableFuture<Optional<PlayerSkin>> aopt = mc.getSkinManager().getOrLoad(withTextures);
                 aopt.thenAccept(opt -> opt.ifPresent(skin::set));
                 //? } else {
-                /*CompletableFuture<PlayerSkin> a = mc.getSkinManager().getOrLoad(withTextures);
+                /^CompletableFuture<PlayerSkin> a = mc.getSkinManager().getOrLoad(withTextures);
                 a.thenAccept(skin::set);
-                *///? }
+                ^///? }
             }
         });
-        //? }
+        *///? }
         return
                 //? >= 1.21.9 {
-                /*mc.getSkinManager().createLookup(profile, true)
-                *///? } else {
-                skin::get
-                 //? }
+                mc.getSkinManager().createLookup(profile, true)
+                //? } else {
+                /*skin::get
+                 *///? }
         ;
     }
 

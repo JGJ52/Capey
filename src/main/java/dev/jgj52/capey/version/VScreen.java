@@ -9,8 +9,8 @@ public class VScreen {
     public static void setScreen(Screen screen) {
         mc.
         //? >= 26.2 {
-        /*gui.
-        *///? }
+        gui.
+        //? }
         setScreen(screen);
     }
 }

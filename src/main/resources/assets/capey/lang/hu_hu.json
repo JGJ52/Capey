@@ -8,5 +8,7 @@
   "capey.config.create.upload": "Köpeny feltöltése",
   "capey.message.token.your": "A Capey tokened:",
   "capey.message.token.share": "NE oszd meg ezt senkivel!",
-  "capey.message.token.auto": "A token automatikusan le lett mentve."
+  "capey.message.token.auto": "A token automatikusan le lett mentve.",
+  "capey.update": "Nem állíthatsz be köpenyeket 1.21.5-ben és az alatt. Fontold meg a frissítést.",
+  "capey.update2": "Attol még látod a köpenyeket!"
 }

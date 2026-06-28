@@ -9,20 +9,20 @@ public class VGameProfile {
     public static UUID getUUID(GameProfile profile) {
         return profile.
                 //? >= 1.21.9 {
-                        /*id
-                *///? } else {
-                getId
-                 //? }
+                        id
+                //? } else {
+                /*getId
+                 *///? }
                         ();
     }
 
     public static String getName(GameProfile profile) {
         return profile.
                 //? >= 1.21.9 {
-                /*name
-                *///? } else {
-                getName
-                 //? }
+                name
+                //? } else {
+                /*getName
+                 *///? }
                         ();
     }
 

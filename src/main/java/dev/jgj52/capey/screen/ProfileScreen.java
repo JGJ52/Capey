@@ -16,11 +16,11 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.chat.Component;
 //? >= 1.21.9 {
-/*import net.minecraft.world.entity.player.PlayerSkin;
+import net.minecraft.world.entity.player.PlayerSkin;
 import net.minecraft.client.input.MouseButtonEvent;
-*///? } else {
-import net.minecraft.client.resources.PlayerSkin;
-//? }
+//? } else {
+/*import net.minecraft.client.resources.PlayerSkin;
+*///? }
 import org.jetbrains.annotations.NotNull;
 
 import java.net.URI;
@@ -110,10 +110,10 @@ public class ProfileScreen extends BetterScreen {
                         @NotNull
                         net.minecraft.client.gui.
                         //? >= 26.1 {
-                        /*GuiGraphicsExtractor
-                         *///? } else {
-                        GuiGraphics
-                        //? }
+                        GuiGraphicsExtractor
+                         //? } else {
+                        /*GuiGraphics
+                        *///? }
                         graphics, int mouseX, int mouseY, float a
                 ) {
                     super.renderPlayer(graphics, mouseX, mouseY, a);
@@ -129,10 +129,10 @@ public class ProfileScreen extends BetterScreen {
                 @Override
                 public void onClick(
                         //? >= 1.21.9 {
-                        /*@NotNull MouseButtonEvent event, boolean doubleClick
-                         *///? } else {
-                        double x, double y
-                        //? }
+                        @NotNull MouseButtonEvent event, boolean doubleClick
+                         //? } else {
+                        /*double x, double y
+                        *///? }
                 ) {
                     String nowUUID = tPlayer.getUUID().toString();
                     String capeUUID = cape.getUUID().toString();

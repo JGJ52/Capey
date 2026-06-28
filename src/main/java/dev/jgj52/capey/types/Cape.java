@@ -9,14 +9,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.resources.*;
 //? >= 1.21.9 {
-/*import net.minecraft.world.entity.player.PlayerModelType;
+import net.minecraft.world.entity.player.PlayerModelType;
 import net.minecraft.world.entity.player.PlayerSkin;
 import net.minecraft.core.ClientAsset;
 import org.jetbrains.annotations.NotNull;
-*///? } else {
-import net.minecraft.client.resources.PlayerSkin;
+//? } else {
+/*import net.minecraft.client.resources.PlayerSkin;
 import com.mojang.authlib.yggdrasil.ProfileResult;
-//? }
+*///? }
 
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -66,10 +66,10 @@ public class Cape {
     private final Path path;
     private volatile
     //? >= 1.21.11 {
-    /*Identifier
-    *///? } else {
-    ResourceLocation
-     //? }
+    Identifier
+    //? } else {
+    /*ResourceLocation
+     *///? }
     identifier;
 
     private Cape(UUID uuid) {
@@ -110,18 +110,23 @@ public class Cape {
             try {
                 NativeImage img = NativeImage.read(Files.newInputStream(path));
                 //? >= 1.21.11 {
-                /*Identifier
-                 *///? } else {
-                ResourceLocation
-                //? }
+                Identifier
+                 //? } else {
+                /*ResourceLocation
+                *///? }
                         identifier =
                 //? >= 1.21.11 {
-                /*Identifier
-                *///? } else {
-                ResourceLocation
-                 //? }
+                Identifier
+                //? } else {
+                /*ResourceLocation
+                 *///? }
                         .fromNamespaceAndPath("capey", "capes/" + uuid);
-                DynamicTexture texture = new DynamicTexture(() -> "capey:capes/" + uuid, img);
+                DynamicTexture texture = new DynamicTexture(
+                        //? >= 1.21.5 {
+                        () -> "capey:capes/" + uuid,
+                        //? }
+                        img
+                );
 
                 mc.getTextureManager().register(identifier, texture);
                 texture.upload();
@@ -138,64 +143,64 @@ public class Cape {
             if (getIdentifier() == null) return orig;
             return new PlayerSkin(
                     //? >= 1.21.9 {
-                    /*orig.body(),
+                    orig.body(),
                     new TextureImpl(getIdentifier()), new TextureImpl(getIdentifier()),
                     orig.model(),
                     orig.secure()
-                    *///? } else {
-                    orig.texture(), orig.textureUrl(),
+                    //? } else {
+                    /*orig.texture(), orig.textureUrl(),
                     getIdentifier(), getIdentifier(),
                     orig.model(),
                     orig.secure()
-            //? }
+            *///? }
             );
         };
     }
 
     public static Supplier<PlayerSkin> emptySkin(
             //? >= 1.21.11 {
-            /*Identifier
-             *///? } else {
-            ResourceLocation
-            //? }
+            Identifier
+             //? } else {
+            /*ResourceLocation
+            *///? }
             identifier
     ) {
         return () -> new PlayerSkin(
                 //? >= 1.21.9 {
-                /*new TextureImpl(
+                new TextureImpl(
                         //? >= 1.21.11 {
-                        /^Identifier
-                         ^///? } else {
-                        ResourceLocation
-                        //? }
+                        Identifier
+                         //? } else {
+                        /*ResourceLocation
+                        *///? }
                                 .fromNamespaceAndPath("capey", "skins/empty.png")),
                 new TextureImpl(identifier), new TextureImpl(identifier),
                 PlayerModelType.SLIM,
                 false
-                *///? } else {
-                ResourceLocation.fromNamespaceAndPath("capey", "skins/empty.png"), "",
+                //? } else {
+                /*ResourceLocation.fromNamespaceAndPath("capey", "skins/empty.png"), "",
                 identifier, identifier,
                 PlayerSkin.Model.SLIM,
                 false
-                //? }
+                *///? }
         );
     }
 
     //? >= 1.21.9 {
-    /*public record TextureImpl(
+    public record TextureImpl(
             //? >= 1.21.11 {
-            /^Identifier
-             ^///? } else {
-            ResourceLocation
-            //? }
+            Identifier
+             //? } else {
+            /*ResourceLocation
+            *///? }
             identifier) implements ClientAsset.Texture {
         @Override
         public @NotNull
             //? >= 1.21.11 {
-            /^Identifier
-             ^///? } else {
-            ResourceLocation
-            //? }
+            Identifier
+             //? } else {
+            /*ResourceLocation
+            *///? }
         texturePath() {
             return identifier;
         }
@@ -203,15 +208,15 @@ public class Cape {
         @Override
         public @NotNull
             //? >= 1.21.11 {
-            /^Identifier
-             ^///? } else {
-            ResourceLocation
-            //? }
+            Identifier
+             //? } else {
+            /*ResourceLocation
+            *///? }
         id() {
             return identifier;
         }
     }
-    *///? }
+    //? }
 
     public UUID getUUID() {
         return uuid;
@@ -219,10 +224,10 @@ public class Cape {
 
     public
     //? >= 1.21.11 {
-    /*Identifier
-    *///? } else {
-    ResourceLocation
-     //? }
+    Identifier
+    //? } else {
+    /*ResourceLocation
+     *///? }
     getIdentifier() {
         return identifier;
     }

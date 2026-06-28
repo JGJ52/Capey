@@ -55,10 +55,10 @@ public class CreateCapeScreen extends BetterScreen {
             @NotNull
             net.minecraft.client.gui.
             //? >= 26.1 {
-            /*GuiGraphicsExtractor
-            *///? } else {
-            GuiGraphics
-            //? }
+            GuiGraphicsExtractor
+            //? } else {
+            /*GuiGraphics
+            *///? }
             graphics, int i, int i1, float v
     ) {
         super.render(graphics, i, i1, v);
@@ -73,16 +73,16 @@ public class CreateCapeScreen extends BetterScreen {
 
     private static final
     //? >= 1.21.11 {
-    /*Identifier
-     *///? } else {
-    ResourceLocation
-    //? }
+    Identifier
+     //? } else {
+    /*ResourceLocation
+    *///? }
     previewId =
     //? >= 1.21.11 {
-    /*Identifier
-     *///? } else {
-    ResourceLocation
-    //? }
+    Identifier
+     //? } else {
+    /*ResourceLocation
+    *///? }
             .fromNamespaceAndPath("capey", "preview");
 
     @Override
@@ -135,10 +135,10 @@ public class CreateCapeScreen extends BetterScreen {
                     @NotNull
                     net.minecraft.client.gui.
                             //? >= 26.1 {
-                            /*GuiGraphicsExtractor
-                            *///? } else {
-                            GuiGraphics
-                             //? }
+                            GuiGraphicsExtractor
+                            //? } else {
+                            /*GuiGraphics
+                             *///? }
                     graphics, int mouseX, int mouseY, float a
             ) {
                 super.renderBoard(graphics, mouseX, mouseY, a);
@@ -525,14 +525,14 @@ public class CreateCapeScreen extends BetterScreen {
         }
 
         //? >= 1.21.11 {
-        /*@Override
-        *///? }
+        @Override
+        //? }
         public void setValue(double newValue) {
             //? >= 1.21.11 {
-            /*super.setValue(newValue)
-             *///? } else {
-            value = newValue;
-            //? }
+            super.setValue(newValue);
+             //? } else {
+            /*value = newValue;
+            *///? }
         }
 
         public AtomicInteger integer() {
@@ -548,13 +548,18 @@ public class CreateCapeScreen extends BetterScreen {
                     image.setPixel(x, y, board.getColor(y * w + x));
                 }
             }
-            texture = new DynamicTexture(() -> "capey:preview", image);
+            texture = new DynamicTexture(
+                    //? >= 1.21.5 {
+                    () -> "capey:preview",
+                    //? }
+                    image
+            );
             mc.getTextureManager().register(
                     //? >= 1.21.11 {
-                    /*Identifier
-                     *///? } else {
-                    ResourceLocation
-                    //? }
+                    Identifier
+                     //? } else {
+                    /*ResourceLocation
+                    *///? }
                             .fromNamespaceAndPath("capey", "preview"),
                     texture
             );

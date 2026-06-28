@@ -20,11 +20,11 @@ public class ConnectionMixin {
     @Inject(method = "channelRead0(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/protocol/Packet;)V", at = @At("HEAD"))
     private void onKick(ChannelHandlerContext ctx, Packet<?> packet, CallbackInfo ci) {
         //? >= 1.21.6 {
-        /*if (packet instanceof ClientboundLoginDisconnectPacket(Component reason)) {
-        *///? } else {
-        if (packet instanceof ClientboundLoginDisconnectPacket kickPacket) {
+        if (packet instanceof ClientboundLoginDisconnectPacket(Component reason)) {
+        //? } else {
+        /*if (packet instanceof ClientboundLoginDisconnectPacket kickPacket) {
             Component reason = kickPacket.getReason();
-        //? }
+        *///? }
             Connection connection = (Connection) (Object) this;
 
             if (connection.getRemoteAddress() instanceof InetSocketAddress addr) {

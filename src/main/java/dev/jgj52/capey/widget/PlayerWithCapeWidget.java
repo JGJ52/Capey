@@ -6,11 +6,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 //? >= 1.21.9 {
-/*import net.minecraft.world.entity.player.PlayerSkin;
+import net.minecraft.world.entity.player.PlayerSkin;
 import net.minecraft.client.input.MouseButtonEvent;
-*///? } else {
+//? } else {
+/*import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.resources.PlayerSkin;
-//? }
+*///? }
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
@@ -59,7 +60,13 @@ public class PlayerWithCapeWidget extends AbstractWidget {
             state.elytraRotY = -0.01f;
             state.elytraRotZ = -0.275f;
             if (elytra) {
-                state.chestEquipment = ely();
+                state.
+                //? >= 1.21.4 {
+                chestEquipment
+                //? } else {
+                /*chestItem
+                *///? }
+                        = ely();
             }
             return state;
         }
@@ -107,18 +114,18 @@ public class PlayerWithCapeWidget extends AbstractWidget {
     @Override
     protected void
     //? >= 26.1 {
-    /*extractWidgetRenderState
-     *///? } else {
-    renderWidget
-    //? }
+    extractWidgetRenderState
+     //? } else {
+    /*renderWidget
+    *///? }
     (
             @NotNull
             net.minecraft.client.gui.
             //? >= 26.1 {
-            /*GuiGraphicsExtractor
-            *///? } else {
-            GuiGraphics
-             //? }
+            GuiGraphicsExtractor
+            //? } else {
+            /*GuiGraphics
+             *///? }
             graphics, int mouseX, int mouseY, float a
     ) {
         renderPlayer(graphics, mouseX, mouseY, a);
@@ -128,10 +135,10 @@ public class PlayerWithCapeWidget extends AbstractWidget {
             @NotNull
             net.minecraft.client.gui.
             //? >= 26.1 {
-            /*GuiGraphicsExtractor
-             *///? } else {
-            GuiGraphics
-            //? }
+            GuiGraphicsExtractor
+             //? } else {
+            /*GuiGraphics
+            *///? }
             graphics, int mouseX, int mouseY, float a
     ) {
         if (background) {
@@ -145,12 +152,12 @@ public class PlayerWithCapeWidget extends AbstractWidget {
         }
 
         //? >= 1.21.6 {
-        /*graphics.
+        graphics.
                 //? >= 26.1 {
-                /^entity
-                ^///? } else {
-                submitEntityRenderState
-                //? }
+                entity
+                //? } else {
+                /*submitEntityRenderState
+                *///? }
                         (
                                 player.state(),
                                 scale,
@@ -165,18 +172,16 @@ public class PlayerWithCapeWidget extends AbstractWidget {
                                 getY() + getHeight()
                         );
 
-        *///? } else {
-         //TODO: this
         //? }
     }
 
     @Override
     protected void onDrag(
             //? >= 1.21.9 {
-            /*@NotNull MouseButtonEvent event,
-            *///? } else {
-            double x, double y,
-            //? }
+            @NotNull MouseButtonEvent event,
+            //? } else {
+            /*double x, double y,
+            *///? }
             double dx, double dy) {
         rotationX = Mth.clamp(this.rotationX - (float) -dy * 2.5f, 140.0f, 220.0f);
         rotationY += (float) dx * 2.5f;
