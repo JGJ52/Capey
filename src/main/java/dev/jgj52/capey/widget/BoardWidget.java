@@ -1,10 +1,9 @@
 package dev.jgj52.capey.widget;
 
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-//? >= 1.21.9 {
 import net.minecraft.client.input.MouseButtonEvent;
-//? }
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
@@ -55,29 +54,11 @@ public class BoardWidget extends AbstractWidget {
     //? } else {
     /*renderWidget
     *///? }
-    (
-            @NotNull
-            net.minecraft.client.gui.
-            //? >= 26.1 {
-            GuiGraphicsExtractor
-            //? } else {
-            /*GuiGraphics
-             *///? }
-            graphics, int mouseX, int mouseY, float a
-    ) {
+    (@NotNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
         renderBoard(graphics, mouseX, mouseY, a);
     }
 
-    protected void renderBoard(
-            @NotNull
-            net.minecraft.client.gui.
-            //? >= 26.1 {
-            GuiGraphicsExtractor
-             //? } else {
-            /*GuiGraphics
-            *///? }
-            graphics, int mouseX, int mouseY, float a
-    ) {
+    protected void renderBoard(@NotNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
         graphics.fill(
                 getX(),
                 getY(),
@@ -109,13 +90,9 @@ public class BoardWidget extends AbstractWidget {
     }
 
     @Override
-    //? >= 1.21.9 {
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
         double x = event.x();
         double y = event.y();
-    //? } else {
-    /*public boolean mouseClicked(double x, double y, int i) {
-    *///? }
         int insideX = ((int) x - getX()) / scale;
         int insideY = ((int) y - getY()) / scale;
 
@@ -128,13 +105,9 @@ public class BoardWidget extends AbstractWidget {
     private int lastY = -1;
 
     @Override
-    //? >= 1.21.9 {
     public boolean mouseDragged(MouseButtonEvent event, double dx, double dy) {
         double X = event.x();
         double Y = event.y();
-    //? } else {
-      /*public boolean mouseDragged(double X, double Y, int i, double dx, double dy) {
-    *///? }
         if (!isMouseOver(X, Y)) {
             lastX = -1;
             lastY = -1;
@@ -155,22 +128,10 @@ public class BoardWidget extends AbstractWidget {
     }
 
     @Override
-    public boolean mouseReleased(
-            //? >= 1.21.9 {
-            @NotNull MouseButtonEvent event
-            //? } else {
-            /*double x, double y, int i
-            *///? }
-    ) {
+    public boolean mouseReleased(@NotNull MouseButtonEvent event) {
         lastX = -1;
         lastY = -1;
-        return super.mouseReleased(
-                //? >= 1.21.9 {
-                event
-                //? } else {
-                /*x, y, i
-                *///? }
-        );
+        return super.mouseReleased(event);
     }
 
     // chatgpt code

@@ -1,17 +1,12 @@
 package dev.jgj52.capey.widget;
 
 import com.google.gson.JsonPrimitive;
-import dev.jgj52.capey.version.VPlayerRenderState;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-//? >= 1.21.9 {
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.world.entity.player.PlayerSkin;
 import net.minecraft.client.input.MouseButtonEvent;
-//? } else {
-/*import net.minecraft.client.gui.screens.inventory.InventoryScreen;
-import net.minecraft.client.resources.PlayerSkin;
-*///? }
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
@@ -25,8 +20,6 @@ import java.util.function.Supplier;
 import static dev.jgj52.capey.Capey.config;
 
 public class PlayerWithCapeWidget extends AbstractWidget {
-    private static final Minecraft mc = Minecraft.getInstance();
-
     public static class FakePlayer {
         private static ItemStack ely = ItemStack.EMPTY;
 
@@ -53,20 +46,14 @@ public class PlayerWithCapeWidget extends AbstractWidget {
             config.save();
         }
 
-        public VPlayerRenderState state() {
-            VPlayerRenderState state = new VPlayerRenderState();
+        public AvatarRenderState state() {
+            AvatarRenderState state = new AvatarRenderState();
             state.skin = skin.get();
             state.elytraRotX = 0.25f;
             state.elytraRotY = -0.01f;
             state.elytraRotZ = -0.275f;
             if (elytra) {
-                state.
-                //? >= 1.21.4 {
-                chestEquipment
-                //? } else {
-                /*chestItem
-                *///? }
-                        = ely();
+                state.chestEquipment = ely();
             }
             return state;
         }
@@ -118,29 +105,11 @@ public class PlayerWithCapeWidget extends AbstractWidget {
      //? } else {
     /*renderWidget
     *///? }
-    (
-            @NotNull
-            net.minecraft.client.gui.
-            //? >= 26.1 {
-            GuiGraphicsExtractor
-            //? } else {
-            /*GuiGraphics
-             *///? }
-            graphics, int mouseX, int mouseY, float a
-    ) {
+    (@NotNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
         renderPlayer(graphics, mouseX, mouseY, a);
     }
 
-    protected void renderPlayer(
-            @NotNull
-            net.minecraft.client.gui.
-            //? >= 26.1 {
-            GuiGraphicsExtractor
-             //? } else {
-            /*GuiGraphics
-            *///? }
-            graphics, int mouseX, int mouseY, float a
-    ) {
+    protected void renderPlayer(@NotNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
         if (background) {
             graphics.fill(
                     getX(),
@@ -151,7 +120,6 @@ public class PlayerWithCapeWidget extends AbstractWidget {
             );
         }
 
-        //? >= 1.21.6 {
         graphics.
                 //? >= 26.1 {
                 entity
@@ -171,18 +139,10 @@ public class PlayerWithCapeWidget extends AbstractWidget {
                                 getX() + getWidth(),
                                 getY() + getHeight()
                         );
-
-        //? }
     }
 
     @Override
-    protected void onDrag(
-            //? >= 1.21.9 {
-            @NotNull MouseButtonEvent event,
-            //? } else {
-            /*double x, double y,
-            *///? }
-            double dx, double dy) {
+    protected void onDrag(@NotNull MouseButtonEvent event, double dx, double dy) {
         rotationX = Mth.clamp(this.rotationX - (float) -dy * 2.5f, 140.0f, 220.0f);
         rotationY += (float) dx * 2.5f;
     }

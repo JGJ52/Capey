@@ -16,6 +16,15 @@ val mixins_file = project.properties["mixins_file"] as String
 
 group = project.properties["maven_group"] as String
 
+stonecutter {
+    replacements.string(current.parsed >= "1.21.11") {
+        replace("ResourceLocation", "Identifier")
+    }
+    replacements.string(current.parsed >= "26.1") {
+        replace("GuiGraphics", "GuiGraphicsExtractor")
+    }
+}
+
 base {
     archivesName.set(project.properties["archives_base_name"] as String)
 }

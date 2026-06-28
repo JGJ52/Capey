@@ -9,16 +9,13 @@ import dev.jgj52.capey.widget.PlayerWithCapeWidget;
 import hu.jgj52.screenapi.screen.BetterScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-//? >= 1.21.9 {
 import net.minecraft.world.entity.player.PlayerSkin;
 import net.minecraft.client.input.MouseButtonEvent;
-//? } else {
-/*import net.minecraft.client.resources.PlayerSkin;
-*///? }
 import org.jetbrains.annotations.NotNull;
 
 import java.net.URI;
@@ -60,28 +57,6 @@ public class ConfigScreen extends BetterScreen {
 
     @Override
     protected void createWidgets(Font font) {
-        //? <= 1.21.5 {
-        /*Component component = Component.translatable("capey.update");
-        int w = font.width(component);
-        widget(new StringWidget(
-                width / 2 - w / 2,
-                height / 2 - font.lineHeight / 2,
-                w,
-                font.lineHeight,
-                component,
-                font
-        ));
-        Component component2 = Component.translatable("capey.update2");
-        int w2 = font.width(component2);
-        widget(new StringWidget(
-                width / 2 - w2 / 2,
-                height / 2 - font.lineHeight / 2 + font.lineHeight,
-                w2,
-                font.lineHeight,
-                component2,
-                font
-        ));
-        *///? } else {
         perRow = mc.getWindow().getGuiScaledWidth() / 80 - 2;
         visCol = mc.getWindow().getGuiScaledHeight() / 100;
         localUUID = mc.player != null ? mc.player.getUUID() : mc.getUser().getProfileId();
@@ -140,7 +115,6 @@ public class ConfigScreen extends BetterScreen {
                     font
             ), null, true);
         }
-        //? }
     }
 
     private void addCape(JsonObject capeO) {
@@ -158,14 +132,7 @@ public class ConfigScreen extends BetterScreen {
         ) {
             @Override
             protected void renderPlayer(
-                    @NotNull
-                    net.minecraft.client.gui.
-                    //? >= 26.1 {
-                    GuiGraphicsExtractor
-                     //? } else {
-                    /*GuiGraphics
-                    *///? }
-                    graphics, int mouseX, int mouseY, float a
+                    @NotNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a
             ) {
                 super.renderPlayer(graphics, mouseX, mouseY, a);
 
@@ -178,13 +145,7 @@ public class ConfigScreen extends BetterScreen {
             }
 
             @Override
-            public void onClick(
-                    //? >= 1.21.9 {
-                    @NotNull MouseButtonEvent event, boolean doubleClick
-                    //? } else {
-                    /*double x, double y
-                    *///? }
-            ) {
+            public void onClick(@NotNull MouseButtonEvent event, boolean doubleClick) {
                 String nowUUID = localUUID.toString();
                 String capeUUID = cape.getUUID().toString();
                 if (background()) Capey.local.get().remove(nowUUID);

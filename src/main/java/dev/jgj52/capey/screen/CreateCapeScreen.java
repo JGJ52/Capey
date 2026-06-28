@@ -9,6 +9,7 @@ import dev.jgj52.capey.widget.PlayerWithCapeWidget;
 import hu.jgj52.screenapi.screen.BetterScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -51,16 +52,7 @@ public class CreateCapeScreen extends BetterScreen {
     }
 
     @Override
-    public void render(
-            @NotNull
-            net.minecraft.client.gui.
-            //? >= 26.1 {
-            GuiGraphicsExtractor
-            //? } else {
-            /*GuiGraphics
-            *///? }
-            graphics, int i, int i1, float v
-    ) {
+    public void render(@NotNull GuiGraphicsExtractor graphics, int i, int i1, float v) {
         super.render(graphics, i, i1, v);
         graphics.fill(
                 10,
@@ -71,19 +63,7 @@ public class CreateCapeScreen extends BetterScreen {
         );
     }
 
-    private static final
-    //? >= 1.21.11 {
-    Identifier
-     //? } else {
-    /*ResourceLocation
-    *///? }
-    previewId =
-    //? >= 1.21.11 {
-    Identifier
-     //? } else {
-    /*ResourceLocation
-    *///? }
-            .fromNamespaceAndPath("capey", "preview");
+    private static final Identifier previewId = Identifier.fromNamespaceAndPath("capey", "preview");
 
     @Override
     protected void createWidgets(Font font) {
@@ -131,16 +111,7 @@ public class CreateCapeScreen extends BetterScreen {
                 H
         ) {
             @Override
-            protected void renderBoard(
-                    @NotNull
-                    net.minecraft.client.gui.
-                            //? >= 26.1 {
-                            GuiGraphicsExtractor
-                            //? } else {
-                            /*GuiGraphics
-                             *///? }
-                    graphics, int mouseX, int mouseY, float a
-            ) {
+            protected void renderBoard(@NotNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
                 super.renderBoard(graphics, mouseX, mouseY, a);
                 // why does this take so long
                 // i spent 45 minutes on this
@@ -548,19 +519,8 @@ public class CreateCapeScreen extends BetterScreen {
                     image.setPixel(x, y, board.getColor(y * w + x));
                 }
             }
-            texture = new DynamicTexture(
-                    //? >= 1.21.5 {
-                    () -> "capey:preview",
-                    //? }
-                    image
-            );
-            mc.getTextureManager().register(
-                    //? >= 1.21.11 {
-                    Identifier
-                     //? } else {
-                    /*ResourceLocation
-                    *///? }
-                            .fromNamespaceAndPath("capey", "preview"),
+            texture = new DynamicTexture(() -> "capey:preview", image);
+            mc.getTextureManager().register(Identifier.fromNamespaceAndPath("capey", "preview"),
                     texture
             );
             texture.upload();

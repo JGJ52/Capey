@@ -1,26 +1,23 @@
 package dev.jgj52.capey.screen;
 
 import com.google.common.net.HttpHeaders;
+import com.mojang.authlib.GameProfile;
 import dev.jgj52.capey.Capey;
 import dev.jgj52.capey.types.Cape;
 import dev.jgj52.capey.types.Player;
-import dev.jgj52.capey.version.VGameProfile;
 import dev.jgj52.capey.widget.PlayerWithCapeWidget;
 import hu.jgj52.screenapi.screen.BetterScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.User;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.chat.Component;
-//? >= 1.21.9 {
 import net.minecraft.world.entity.player.PlayerSkin;
 import net.minecraft.client.input.MouseButtonEvent;
-//? } else {
-/*import net.minecraft.client.resources.PlayerSkin;
-*///? }
 import org.jetbrains.annotations.NotNull;
 
 import java.net.URI;
@@ -35,7 +32,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
-import static dev.jgj52.capey.version.VGameProfile.getName;
 import static dev.jgj52.capey.version.VScreen.setScreen;
 
 public class ProfileScreen extends BetterScreen {
@@ -44,14 +40,14 @@ public class ProfileScreen extends BetterScreen {
     private static final ExecutorService fetcher = Executors.newVirtualThreadPerTaskExecutor();
 
     private final Screen parent;
-    private final VGameProfile player;
+    private final GameProfile player;
     public ProfileScreen(Screen parent, AbstractClientPlayer player) {
         this.parent = parent;
-        this.player = new VGameProfile(player.getUUID(), getName(player.getGameProfile()));
+        this.player = player.getGameProfile();
     }
     public ProfileScreen(Screen parent, User player) {
         this.parent = parent;
-        this.player = new VGameProfile(player.getProfileId(), player.getName());
+        this.player = new GameProfile(player.getProfileId(), player.getName());
     }
 
     @Override
@@ -63,14 +59,14 @@ public class ProfileScreen extends BetterScreen {
 
     @Override
     protected void createWidgets(Font font) {
-        Player cplayer = Player.of(player.getUUID());
+        Player cplayer = Player.of(player.id());
         Cape ccape = cplayer.getCape();
         widget(new StringWidget(
                 70 - font.width(this.player.name()) / 2,
                 height / 2 - 110 - font.lineHeight,
                 font.width(this.player.name()),
                 font.lineHeight,
-                this.player.name(),
+                Component.literal(this.player.name()),
                 font
         ), "name", true);
         PlayerWithCapeWidget widget = widget(new PlayerWithCapeWidget(
@@ -86,7 +82,7 @@ public class ProfileScreen extends BetterScreen {
 
         AtomicInteger offset = new AtomicInteger();
         int perRow = mc.getWindow().getGuiScaledWidth() / 80 - 2;
-        Player local = Player.of(this.player.getUUID());
+        Player local = Player.of(this.player.id());
         Supplier<Cape> selected = local::getCape;
         List<PlayerWithCapeWidget> all = new ArrayList<>();
         all.add(widget);
@@ -97,7 +93,7 @@ public class ProfileScreen extends BetterScreen {
             Supplier<PlayerSkin> skinWithCape = cape.fromSkin(player.getSkin());
 
             int i = offset.getAndIncrement();
-            VGameProfile tPlayer = this.player;
+            GameProfile tPlayer = this.player;
             all.add(widget(new PlayerWithCapeWidget(
                     (i % perRow) * 80 + (width - perRow * 80) / 2,
                     (i / perRow) * 100 + 50,
@@ -106,16 +102,7 @@ public class ProfileScreen extends BetterScreen {
                     skinWithCape
             ) {
                 @Override
-                protected void renderPlayer(
-                        @NotNull
-                        net.minecraft.client.gui.
-                        //? >= 26.1 {
-                        GuiGraphicsExtractor
-                         //? } else {
-                        /*GuiGraphics
-                        *///? }
-                        graphics, int mouseX, int mouseY, float a
-                ) {
+                protected void renderPlayer(@NotNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
                     super.renderPlayer(graphics, mouseX, mouseY, a);
 
                     if (selected.get() == cape && !background()) {
@@ -127,14 +114,8 @@ public class ProfileScreen extends BetterScreen {
                 }
 
                 @Override
-                public void onClick(
-                        //? >= 1.21.9 {
-                        @NotNull MouseButtonEvent event, boolean doubleClick
-                         //? } else {
-                        /*double x, double y
-                        *///? }
-                ) {
-                    String nowUUID = tPlayer.getUUID().toString();
+                public void onClick(@NotNull MouseButtonEvent event, boolean doubleClick) {
+                    String nowUUID = tPlayer.id().toString();
                     String capeUUID = cape.getUUID().toString();
                     if (background()) Capey.local.get().remove(nowUUID);
                     else Capey.local.get().addProperty(nowUUID, capeUUID);
