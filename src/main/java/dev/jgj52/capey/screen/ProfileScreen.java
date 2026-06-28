@@ -10,7 +10,6 @@ import hu.jgj52.screenapi.screen.BetterScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.User;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.screens.Screen;
@@ -18,7 +17,7 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.PlayerSkin;
-import org.jspecify.annotations.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -57,7 +56,16 @@ public class ProfileScreen extends BetterScreen {
     }
 
     @Override
-    public void render(GuiGraphicsExtractor graphics, int i, int i1, float v) {
+    public void render(
+            @NotNull
+            net.minecraft.client.gui.
+            //? >= 26.1 {
+            /*GuiGraphicsExtractor
+            *///? } else {
+            GuiGraphics
+             //? }
+            graphics, int i, int i1, float v
+    ) {
 
     }
 
@@ -108,8 +116,17 @@ public class ProfileScreen extends BetterScreen {
                     skinWithCape
             ) {
                 @Override
-                protected void extractWidgetRenderState(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
-                    super.extractWidgetRenderState(graphics, mouseX, mouseY, a);
+                protected void renderPlayer(
+                        @NotNull
+                        net.minecraft.client.gui.
+                        //? >= 26.1 {
+                        /*GuiGraphicsExtractor
+                         *///? } else {
+                        GuiGraphics
+                        //? }
+                        graphics, int mouseX, int mouseY, float a
+                ) {
+                    super.renderPlayer(graphics, mouseX, mouseY, a);
 
                     if (selected.get() == cape && !background()) {
                         all.forEach(w -> w.background(false));
@@ -120,7 +137,7 @@ public class ProfileScreen extends BetterScreen {
                 }
 
                 @Override
-                public void onClick(@NonNull MouseButtonEvent event, boolean doubleClick) {
+                public void onClick(@NotNull MouseButtonEvent event, boolean doubleClick) {
                     String nowUUID = tPlayer.getUUID().toString();
                     String capeUUID = cape.getUUID().toString();
                     if (background()) Capey.local.get().remove(nowUUID);

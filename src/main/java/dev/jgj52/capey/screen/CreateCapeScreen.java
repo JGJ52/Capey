@@ -9,7 +9,6 @@ import dev.jgj52.capey.widget.PlayerWithCapeWidget;
 import hu.jgj52.screenapi.screen.BetterScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -52,7 +51,16 @@ public class CreateCapeScreen extends BetterScreen {
     }
 
     @Override
-    public void render(GuiGraphicsExtractor graphics, int i, int i1, float v) {
+    public void render(
+            @NotNull
+            net.minecraft.client.gui.
+            //? >= 26.1 {
+            /*GuiGraphicsExtractor
+            *///? } else {
+            GuiGraphics
+            //? }
+            graphics, int i, int i1, float v
+    ) {
         graphics.fill(
                 10,
                 height - 140,
@@ -108,8 +116,17 @@ public class CreateCapeScreen extends BetterScreen {
                 H
         ) {
             @Override
-            protected void extractWidgetRenderState(@NotNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
-                super.extractWidgetRenderState(graphics, mouseX, mouseY, a);
+            protected void renderBoard(
+                    @NotNull
+                    net.minecraft.client.gui.
+                            //? >= 26.1 {
+                            /*GuiGraphicsExtractor
+                            *///? } else {
+                            GuiGraphics
+                             //? }
+                    graphics, int mouseX, int mouseY, float a
+            ) {
+                super.renderBoard(graphics, mouseX, mouseY, a);
                 // why does this take so long
                 // i spent 45 minutes on this
 

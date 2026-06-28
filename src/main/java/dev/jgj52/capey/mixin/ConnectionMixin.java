@@ -23,10 +23,7 @@ public class ConnectionMixin {
             Connection connection = (Connection) (Object) this;
 
             if (connection.getRemoteAddress() instanceof InetSocketAddress addr) {
-                String host = "home.jgj52.dev";
-                //? >= 26.2 {
-                host += ".";
-                //? }
+                String host = "home.jgj52.dev.";
                 if (addr.getHostName().equals(host) && addr.getPort() == 61250) {
                     String reasonS = reason.getString();
                     String[] split = reasonS.split("\\$");

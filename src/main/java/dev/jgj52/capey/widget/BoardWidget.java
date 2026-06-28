@@ -1,6 +1,5 @@
 package dev.jgj52.capey.widget;
 
-import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -48,7 +47,35 @@ public class BoardWidget extends AbstractWidget {
     }
 
     @Override
-    protected void extractWidgetRenderState(@NotNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+    protected void
+    //? >= 26.1 {
+    /*extractWidgetRenderState
+    *///? } else {
+    renderWidget
+    //? }
+    (
+            @NotNull
+            net.minecraft.client.gui.
+            //? >= 26.1 {
+            /*GuiGraphicsExtractor
+            *///? } else {
+            GuiGraphics
+             //? }
+            graphics, int mouseX, int mouseY, float a
+    ) {
+        renderBoard(graphics, mouseX, mouseY, a);
+    }
+
+    protected void renderBoard(
+            @NotNull
+            net.minecraft.client.gui.
+            //? >= 26.1 {
+            /*GuiGraphicsExtractor
+             *///? } else {
+            GuiGraphics
+            //? }
+            graphics, int mouseX, int mouseY, float a
+    ) {
         graphics.fill(
                 getX(),
                 getY(),

@@ -1,7 +1,6 @@
 package dev.jgj52.capey.widget;
 
 import com.google.gson.JsonPrimitive;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -99,7 +98,35 @@ public class PlayerWithCapeWidget extends AbstractWidget {
     }
 
     @Override
-    protected void extractWidgetRenderState(@NotNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+    protected void
+    //? >= 26.1 {
+    /*extractWidgetRenderState
+     *///? } else {
+    renderWidget
+    //? }
+    (
+            @NotNull
+            net.minecraft.client.gui.
+            //? >= 26.1 {
+            /*GuiGraphicsExtractor
+            *///? } else {
+            GuiGraphics
+             //? }
+            graphics, int mouseX, int mouseY, float a
+    ) {
+        renderPlayer(graphics, mouseX, mouseY, a);
+    }
+
+    protected void renderPlayer(
+            @NotNull
+            net.minecraft.client.gui.
+            //? >= 26.1 {
+            /*GuiGraphicsExtractor
+             *///? } else {
+            GuiGraphics
+            //? }
+            graphics, int mouseX, int mouseY, float a
+    ) {
         if (background) {
             graphics.fill(
                     getX(),
@@ -110,19 +137,25 @@ public class PlayerWithCapeWidget extends AbstractWidget {
             );
         }
 
-        graphics.entity(
-                player.state(),
-                scale,
-                new Vector3f(0, offset, 0),
-                new Quaternionf()
-                        .rotateX((float) Math.toRadians(rotationX))
-                        .rotateY((float) Math.toRadians(rotationY)),
-                new Quaternionf(),
-                getX(),
-                getY(),
-                getX() + getWidth(),
-                getY() + getHeight()
-        );
+        graphics.
+                //? >= 26.1 {
+                /*entity
+                 *///? } else {
+                submitEntityRenderState
+                //? }
+                        (
+                                player.state(),
+                                scale,
+                                new Vector3f(0, offset, 0),
+                                new Quaternionf()
+                                        .rotateX((float) Math.toRadians(rotationX))
+                                        .rotateY((float) Math.toRadians(rotationY)),
+                                new Quaternionf(),
+                                getX(),
+                                getY(),
+                                getX() + getWidth(),
+                                getY() + getHeight()
+                        );
     }
 
     @Override
