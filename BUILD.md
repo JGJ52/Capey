@@ -8,6 +8,8 @@ While Modrinth is reviewing, download JARs from here:
 - [1.21.11](https://cdn.modrinth.com/data/CyJJ10KQ/versions/jRJmJ8LM/capey-1.0.jar?mr_download_reason=standalone)
 - [1.21.9-1.21.10](https://cdn.modrinth.com/data/CyJJ10KQ/versions/XuLKK2my/capey-1.0.jar?mr_download_reason=standalone)
 
+(for some reason you can still download the jars with the link even if the mod is under review)
+
 ## Requirements
 
 - Java 25
