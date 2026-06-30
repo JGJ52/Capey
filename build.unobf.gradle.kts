@@ -1,5 +1,6 @@
 plugins {
     id("net.fabricmc.fabric-loom") version "1.16-SNAPSHOT"
+    id("dev.kikugie.fletching-table.fabric") version "0.1.0-alpha.22"
     `maven-publish`
 }
 
@@ -8,9 +9,8 @@ val minecraft_version = project.properties["minecraft_version"] as String
 val minecraft_higher_version = project.properties["minecraft_higher_version"] as String
 val loader_version = project.properties["loader_version"] as String
 
-val fabric_version = project.properties["fabric_version"] as String
+val fabricapi_version = project.properties["fabricapi_version"] as String
 val screenapi_version = project.properties["screenapi_version"] as String
-val modmenu_version = project.properties["modmenu_version"] as String
 
 val mixins_file = project.properties["mixins_file"] as String
 
@@ -30,17 +30,20 @@ base {
 }
 
 repositories {
-    maven { url = uri("https://maven.terraformersmc.com/releases") }
-    maven { url = uri("https://api.modrinth.com/maven") }
+    fun strictMaven(url: String, alias: String, vararg groups: String) = exclusiveContent {
+        forRepository { maven(url) { name = alias } }
+        filter { groups.forEach(::includeGroup) }
+    }
+    strictMaven("https://api.modrinth.com/maven", "Modrinth", "maven.modrinth")
 }
 
 dependencies {
     minecraft("com.mojang:minecraft:${minecraft_version}")
     implementation("net.fabricmc:fabric-loader:${loader_version}")
 
-    implementation("net.fabricmc.fabric-api:fabric-api:${fabric_version}")
+    implementation("net.fabricmc.fabric-api:fabric-api:${fabricapi_version}")
+    implementation(fletchingTable.modrinth("modmenu", minecraft_version, "fabric"))
     implementation("maven.modrinth:screenapi:${screenapi_version}")
-    implementation("com.terraformersmc:modmenu:${modmenu_version}")
 }
 
 tasks.processResources {
