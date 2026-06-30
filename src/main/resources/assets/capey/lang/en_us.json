@@ -8,7 +8,5 @@
   "capey.config.create.upload": "Upload cape",
   "capey.message.token.your": "Your Capey token is:",
   "capey.message.token.share": "Do NOT share this with anyone!",
-  "capey.message.token.auto": "Capey automatically saved this token.",
-  "capey.update": "You can't configure your capes on 1.21.5 and below. Consider updating.",
-  "capey.update2": "You can still see capes in-game tho!"
+  "capey.message.token.auto": "Capey automatically saved this token."
 }
