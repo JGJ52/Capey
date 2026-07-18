@@ -12,7 +12,7 @@ While Modrinth is reviewing, download JARs from here:
 
 ## Requirements
 
-- Java 25
+- Java 25 on 26.1+
 
 ### Linux/macOS
 
