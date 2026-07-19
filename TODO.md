@@ -1,0 +1,8 @@
+- color picker tool
+- color preview bar
+- select if cape should change elytra texture or no
+- button to put default elytra texture
+- delete cape option
+- edit cape option
+- explain what the colors mean on the cape editor
+- fix preview
