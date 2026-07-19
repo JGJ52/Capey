@@ -6,3 +6,6 @@
 - edit cape option
 - explain what the colors mean on the cape editor
 - fix preview
+- fix skins
+- abilty to change the cape's name
+- steal cape option (puts you in an editor with the stolen cape's texture)
