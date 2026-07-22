@@ -16,7 +16,10 @@ public class BoardWidget extends AbstractWidget {
 
     protected final int w;
     protected final int h;
-    private final int[] pixels;
+    private int[] pixels;
+    public void setPixels(int[] pixles) {
+        this.pixels = pixles;
+    }
 
     private int color = 0xffffffff;
     public void color(int color) {
@@ -48,13 +51,7 @@ public class BoardWidget extends AbstractWidget {
     }
 
     @Override
-    protected void
-    //? >= 26.1 {
-    extractWidgetRenderState
-    //? } else {
-    /*renderWidget
-    *///? }
-    (@NotNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+    protected void extractWidgetRenderState(@NotNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
         renderBoard(graphics, mouseX, mouseY, a);
     }
 

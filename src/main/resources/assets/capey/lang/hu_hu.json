@@ -5,7 +5,10 @@
   "capey.config.main.elytra": "Kitinszárnyak ki/bekapcsolása",
   "capey.config.my.create": "Új köpeny készítése",
   "capey.config.my.remaining": "%s felhasználva a %s köpenyből",
+  "capey.config.my.edit": "Kiválasztott köpeny szerkesztése",
   "capey.config.create.upload": "Köpeny feltöltése",
+  "capey.config.create.elytra": "Köpeny megváltoztatja az elytra textúráját: %s",
+  "capey.config.edit.save": "Mentés",
   "capey.message.token.your": "A Capey tokened:",
   "capey.message.token.share": "NE oszd meg ezt senkivel!",
   "capey.message.token.auto": "A token automatikusan le lett mentve."

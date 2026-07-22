@@ -30,7 +30,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 
 import static dev.jgj52.capey.version.VScreen.setScreen;
 
@@ -45,6 +47,7 @@ public class CreateCapeScreen extends BetterScreen {
     }
 
     private DynamicTexture texture;
+    private Supplier<Integer> colorSupply = () -> 0;
 
     @Override
     protected int getScrollSpeed() {
@@ -60,6 +63,14 @@ public class CreateCapeScreen extends BetterScreen {
                 80,
                 height - 60,
                 0x80000000
+        );
+
+        graphics.fill(
+                10,
+                40,
+                97,
+                50,
+                colorSupply.get()
         );
     }
 
@@ -321,6 +332,8 @@ public class CreateCapeScreen extends BetterScreen {
             }
         }, "board", true);
 
+        colorSupply = board::color;
+
         Component componentH = Component.literal("#");
         widget(new StringWidget(
                 10,
@@ -403,7 +416,9 @@ public class CreateCapeScreen extends BetterScreen {
                 return;
             }
 
-            a.set((h >> 24) & 0xFF);
+            int A = (h >> 24) & 0xFF;
+
+            a.set(A == 0 && s.length() == 6 ? 255 : A);
             r.set((h >> 16) & 0xFF);
             g.set((h >> 8) & 0xFF);
             b.set(h & 0xFF);
@@ -423,6 +438,7 @@ public class CreateCapeScreen extends BetterScreen {
         ));
         name.setValue("Cape name");
 
+        AtomicBoolean elytra = new AtomicBoolean(true);
         widget(
                 Button.builder(
                                 Component.translatable("capey.config.create.upload"),
@@ -461,6 +477,10 @@ public class CreateCapeScreen extends BetterScreen {
                                                                 "X-Cape-Name",
                                                                 name.getValue()
                                                         )
+                                                        .header(
+                                                                "X-Cape-Change-Elytra",
+                                                                elytra.toString()
+                                                        )
                                                         .build();
 
                                                 HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -485,6 +505,18 @@ public class CreateCapeScreen extends BetterScreen {
                         .build(),
                 "upload",
                 true
+        );
+
+        widget(
+                Button.builder(
+                                Component.translatable("capey.config.create.elytra", elytra.toString()),
+                                button -> {
+                                    elytra.set(!elytra.get());
+                                    button.setMessage(Component.translatable("capey.config.create.elytra", elytra.toString()));
+                                }
+                        )
+                        .bounds(width - 300, height - 30, 200, 20)
+                        .build()
         );
     }
 

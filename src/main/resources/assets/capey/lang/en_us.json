@@ -5,7 +5,10 @@
   "capey.config.main.elytra": "Toggle elytra",
   "capey.config.my.create": "Create cape",
   "capey.config.my.remaining": "%s capes used of %s",
+  "capey.config.my.edit": "Edit selected cape",
   "capey.config.create.upload": "Upload cape",
+  "capey.config.create.elytra": "Cape changes elytra texture: %s",
+  "capey.config.edit.save": "Save",
   "capey.message.token.your": "Your Capey token is:",
   "capey.message.token.share": "Do NOT share this with anyone!",
   "capey.message.token.auto": "Capey automatically saved this token."

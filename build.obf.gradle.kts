@@ -23,6 +23,9 @@ stonecutter {
     replacements.string(current.parsed >= "26.1") {
         replace("GuiGraphics", "GuiGraphicsExtractor")
     }
+    replacements.string(current.parsed >= "26.1") {
+        replace("renderWidget", "extractWidgetRenderState")
+    }
 }
 
 base {

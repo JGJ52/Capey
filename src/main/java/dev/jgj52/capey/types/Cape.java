@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.platform.NativeImage;
+import dev.jgj52.capey.Capey;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
@@ -60,6 +61,9 @@ public class Cape {
     private final UUID uuid;
     private final Path path;
     private volatile Identifier identifier;
+    private volatile String name;
+    private volatile boolean elytra;
+    private volatile UUID uploader;
 
     private Cape(UUID uuid) {
         this.uuid = uuid;
@@ -67,6 +71,10 @@ public class Cape {
         File file = new File(path.toUri());
         if (file.exists()) {
             registerTextures();
+            JsonObject obj = Capey.capes.get(uuid.toString()).getAsJsonObject();
+            name = obj.get("name").getAsString();
+            elytra = obj.get("elytra").getAsBoolean();
+            uploader = UUID.fromString(obj.get("uploader").getAsString());
         } else {
             file.getParentFile().mkdirs();
             fetcher.submit(() -> {
@@ -85,6 +93,17 @@ public class Cape {
                         Files.write(path, response.body());
                         registerTextures();
                     }
+                    name = response.headers().firstValue("X-Cape-Name").orElse("");
+                    elytra = response.headers().firstValue("X-Cape-Change-Elytra").map(Boolean::parseBoolean).orElse(true);
+                    uploader = response.headers().firstValue("X-Capey-Uploader").map(UUID::fromString).orElse(null);
+
+                    JsonObject obj = new JsonObject();
+                    obj.addProperty("name", name);
+                    obj.addProperty("elytra", elytra);
+                    obj.addProperty("uploader", uploader.toString());
+
+                    Capey.capes.set(uuid.toString(), obj);
+                    Capey.capes.save();
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 } finally {
@@ -92,6 +111,34 @@ public class Cape {
                 }
             });
         }
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public boolean changesElytra() {
+        return elytra;
+    }
+
+    public UUID getUploader() {
+        return uploader;
+    }
+
+    public void setName(String name) {
+        Capey.capes.get(uuid.toString()).getAsJsonObject().addProperty("name", name);
+        Capey.capes.save();
+        this.name = name;
+    }
+
+    public void changesElytra(boolean elytra) {
+        Capey.capes.get(uuid.toString()).getAsJsonObject().addProperty("elytra", elytra);
+        Capey.capes.save();
+        this.elytra = elytra;
+    }
+
+    public Path getPath() {
+        return path;
     }
 
     private void registerTextures() {
@@ -116,7 +163,7 @@ public class Cape {
             if (getIdentifier() == null) return orig;
             return new PlayerSkin(
                     orig.body(),
-                    new TextureImpl(getIdentifier()), new TextureImpl(getIdentifier()),
+                    new TextureImpl(getIdentifier()), changesElytra() ? new TextureImpl(getIdentifier()) : orig.elytra(),
                     orig.model(),
                     orig.secure()
             );

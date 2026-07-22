@@ -99,13 +99,7 @@ public class PlayerWithCapeWidget extends AbstractWidget {
     }
 
     @Override
-    protected void
-    //? >= 26.1 {
-    extractWidgetRenderState
-     //? } else {
-    /*renderWidget
-    *///? }
-    (@NotNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+    protected void extractWidgetRenderState(@NotNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
         renderPlayer(graphics, mouseX, mouseY, a);
     }
 

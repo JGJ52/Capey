@@ -56,6 +56,7 @@ public class ProfileScreen extends BetterScreen {
     }
 
     protected int used = 0;
+    protected Supplier<Cape> selected;
 
     @Override
     protected void createWidgets(Font font) {
@@ -83,7 +84,7 @@ public class ProfileScreen extends BetterScreen {
         AtomicInteger offset = new AtomicInteger();
         int perRow = mc.getWindow().getGuiScaledWidth() / 80 - 2;
         Player local = Player.of(this.player.id());
-        Supplier<Cape> selected = local::getCape;
+        selected = local::getCape;
         List<PlayerWithCapeWidget> all = new ArrayList<>();
         all.add(widget);
         Cape.all(false).forEach(capeO -> {

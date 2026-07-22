@@ -10,6 +10,7 @@ public class Capey implements ModInitializer {
     public static Config tokens;
     public static Config local;
     public static Config config;
+    public static Config capes;
 
     @Override
     public void onInitialize() {
@@ -18,5 +19,6 @@ public class Capey implements ModInitializer {
         tokens = new Config("tokens");
         local = new Config("local");
         config = new Config("config");
+        capes = new Config("capes");
     }
 }

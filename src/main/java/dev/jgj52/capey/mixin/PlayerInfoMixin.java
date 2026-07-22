@@ -20,6 +20,8 @@ public class PlayerInfoMixin {
 
         if (cape == null) return;
 
+        System.out.println(cape.changesElytra());
+
         cir.setReturnValue(cape.fromSkin(() -> original).get());
     }
 }

@@ -4,8 +4,9 @@
   "package": "dev.jgj52.capey.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "ConnectionMixin",
     "PlayerInfoMixin",
-    "ConnectionMixin"
+    "WingsLayerMixin"
   ],
   "client": [
   ],

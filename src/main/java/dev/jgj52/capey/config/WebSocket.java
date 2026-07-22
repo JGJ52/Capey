@@ -10,13 +10,20 @@ import java.util.concurrent.CompletionStage;
 
 public class WebSocket implements java.net.http.WebSocket.Listener {
     private static final HttpClient client = HttpClient.newHttpClient();
-    private final java.net.http.WebSocket webSocket;
+    private java.net.http.WebSocket webSocket;
 
     public WebSocket() {
         try {
-            webSocket = client.newWebSocketBuilder()
+            client.newWebSocketBuilder()
                     .buildAsync(URI.create("wss://api.capey.app/v1"), this)
-                    .join();
+                    .whenComplete((ws, throwable) -> {
+                        if (throwable != null) {
+                            System.err.println("Failed to connect to Capey API: " + throwable.getMessage());
+                            return;
+                        }
+
+                        this.webSocket = ws;
+                    });
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
