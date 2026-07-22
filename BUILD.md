@@ -12,10 +12,10 @@ While Modrinth is reviewing, download JARs from here:
 
 ## Requirements
 
-- Java 25 on 26.1+
+- Java 25 on & above 26.1
+- Java 21 below 26.1
 
 ### Linux/macOS
-
 ```sh
 git clone https://codeberg.org/Capey/Capey.git
 cd Capey
@@ -23,7 +23,6 @@ cd Capey
 ```
 
 ### Windows
-
 ```powershell
 git clone https://codeberg.org/Capey/Capey.git
 cd Capey
@@ -31,15 +30,13 @@ cd Capey
 ```
 
 The built JAR will be located at:
-
 ```
 versions/{minecraft_version}/build/libs/capey-{version}.jar
 ```
 
 If there isn't a directory for your exact Minecraft version, but your version is **1.21.9 or newer** (the minimum supported version), use the closest **older** version instead.
-
+\
 Examples:
-
 - `1.21.10` → `1.21.9`
 - `26.1.2` → `26.1`
 - `26.1.1` → `26.1`
