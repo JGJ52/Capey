@@ -116,7 +116,7 @@ public class EditCapeScreen extends BetterScreen {
         }
 
         try {
-            NativeImage image = NativeImage.read(Files.newInputStream(cape.getPath()));
+            NativeImage image = cape.getImage();
 
             int W = image.getWidth();
             int H = image.getHeight();
@@ -500,11 +500,6 @@ public class EditCapeScreen extends BetterScreen {
                                                         System.out.println(response.statusCode());
                                                         System.out.println(response.body());
                                                     } else {
-                                                        cape.setName(name.getValue());
-                                                        cape.changesElytra(elytra.get());
-                                                        image.writeToFile(cape.getPath());
-                                                        cape.registerTextures();
-                                                        Cape.all(true);
                                                         mc.execute(this::onClose);
                                                     }
                                                 } catch (Exception e) {

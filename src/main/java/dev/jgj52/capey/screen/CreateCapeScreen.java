@@ -489,7 +489,6 @@ public class CreateCapeScreen extends BetterScreen {
                                                     System.out.println(response.statusCode());
                                                     System.out.println(response.body());
                                                 } else {
-                                                    Cape.all(true);
                                                     mc.execute(this::onClose);
                                                 }
                                             } catch (Exception e) {

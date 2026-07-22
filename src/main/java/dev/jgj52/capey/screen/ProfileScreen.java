@@ -87,6 +87,7 @@ public class ProfileScreen extends BetterScreen {
         selected = local::getCape;
         List<PlayerWithCapeWidget> all = new ArrayList<>();
         all.add(widget);
+        used = 0;
         Cape.all(false).forEach(capeO -> {
             Player player = Player.of(UUID.fromString(capeO.get("uploader").getAsString()));
             if (player != cplayer) return;

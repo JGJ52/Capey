@@ -4,8 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.platform.NativeImage;
-import dev.jgj52.capey.Capey;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.resources.*;
@@ -14,9 +12,9 @@ import net.minecraft.world.entity.player.PlayerSkin;
 import net.minecraft.core.ClientAsset;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.io.File;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.nio.file.Files;
@@ -56,10 +54,14 @@ public class Cape {
         all = capes;
         return capes;
     }
+    public static void add(JsonObject cape) {
+        all.add(cape);
+    }
     private static final Semaphore semaphore = new Semaphore(5);
 
     private final UUID uuid;
     private final Path path;
+    private NativeImage image;
     private volatile Identifier identifier;
     private volatile String name;
     private volatile boolean elytra;
@@ -67,50 +69,12 @@ public class Cape {
 
     private Cape(UUID uuid) {
         this.uuid = uuid;
-        path = Path.of(FabricLoader.getInstance().getGameDir().toString(), "capey", uuid.toString());
-        File file = new File(path.toUri());
-        if (file.exists()) {
-            registerTextures();
-            JsonObject obj = Capey.capes.get(uuid.toString()).getAsJsonObject();
-            name = obj.get("name").getAsString();
-            elytra = obj.get("elytra").getAsBoolean();
-            uploader = UUID.fromString(obj.get("uploader").getAsString());
-        } else {
-            file.getParentFile().mkdirs();
-            fetcher.submit(() -> {
-                try {
-                    semaphore.acquire();
-                    HttpRequest request = HttpRequest.newBuilder()
-                            .uri(new URI("https://api.capey.app/v1/cape/" + uuid))
-                            .GET()
-                            .build();
-
-                    HttpResponse<byte[]> response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
-                    if (response.statusCode() == 404) {
-                        identifier = null;
-                    }
-                    if (response.statusCode() == 200) {
-                        Files.write(path, response.body());
-                        registerTextures();
-                    }
-                    name = response.headers().firstValue("X-Cape-Name").orElse("");
-                    elytra = response.headers().firstValue("X-Cape-Change-Elytra").map(Boolean::parseBoolean).orElse(true);
-                    uploader = response.headers().firstValue("X-Capey-Uploader").map(UUID::fromString).orElse(null);
-
-                    JsonObject obj = new JsonObject();
-                    obj.addProperty("name", name);
-                    obj.addProperty("elytra", elytra);
-                    obj.addProperty("uploader", uploader.toString());
-
-                    Capey.capes.set(uuid.toString(), obj);
-                    Capey.capes.save();
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                } finally {
-                    semaphore.release();
-                }
-            });
+        try {
+            path = Files.createTempFile(uuid.toString() + "-", ".capey");
+        } catch (java.io.IOException e) {
+            throw new RuntimeException(e);
         }
+        reFetch();
     }
 
     public String getName() {
@@ -125,35 +89,55 @@ public class Cape {
         return uploader;
     }
 
-    public void setName(String name) {
-        Capey.capes.get(uuid.toString()).getAsJsonObject().addProperty("name", name);
-        Capey.capes.save();
-        this.name = name;
+    public NativeImage getImage() {
+        return image;
     }
 
-    public void changesElytra(boolean elytra) {
-        Capey.capes.get(uuid.toString()).getAsJsonObject().addProperty("elytra", elytra);
-        Capey.capes.save();
-        this.elytra = elytra;
-    }
-
-    public Path getPath() {
-        return path;
-    }
-
-    public void registerTextures() {
-        mc.execute(() -> {
+    public void reFetch() {
+        fetcher.submit(() -> {
             try {
-                Identifier identifier = Identifier.fromNamespaceAndPath("capey", "capes/" + uuid);
-                mc.getTextureManager().release(identifier);
+                semaphore.acquire();
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(new URI("https://api.capey.app/v1/cape/" + uuid))
+                        .GET()
+                        .build();
 
-                NativeImage img = NativeImage.read(Files.newInputStream(path));
-                DynamicTexture texture = new DynamicTexture(() -> "capey:capes/" + uuid, img);
+                HttpResponse<byte[]> response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
+                if (response.statusCode() == 404) {
+                    identifier = null;
+                }
+                if (response.statusCode() == 200) {
+                    Files.write(path, response.body());
+                    mc.execute(() -> {
+                        try {
+                            Identifier identifier = Identifier.fromNamespaceAndPath("capey", "capes/" + uuid);
+                            mc.getTextureManager().release(identifier);
 
-                mc.getTextureManager().register(identifier, texture);
-                this.identifier = identifier;
+                            image = NativeImage.read(Files.newInputStream(path));
+                            DynamicTexture texture = new DynamicTexture(() -> "capey:capes/" + uuid, image);
+
+                            mc.getTextureManager().register(identifier, texture);
+                            this.identifier = identifier;
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+
+                        fetcher.submit(() -> {
+                            try {
+                                Files.delete(path);
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        });
+                    });
+                }
+                name = response.headers().firstValue("X-Cape-Name").orElse("");
+                elytra = response.headers().firstValue("X-Cape-Change-Elytra").map(Boolean::parseBoolean).orElse(true);
+                uploader = response.headers().firstValue("X-Capey-Uploader").map(UUID::fromString).orElse(null);
             } catch (Exception e) {
                 throw new RuntimeException(e);
+            } finally {
+                semaphore.release();
             }
         });
     }

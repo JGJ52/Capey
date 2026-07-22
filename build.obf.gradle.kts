@@ -1,6 +1,7 @@
 plugins {
     id("fabric-loom") version "1.16-SNAPSHOT"
     id("dev.kikugie.fletching-table.fabric") version "0.1.0-alpha.22"
+    id("me.modmuss50.mod-publish-plugin") version "2.1.1"
     `maven-publish`
 }
 
@@ -100,5 +101,38 @@ publishing {
     }
     repositories {
         // Add publishing repositories here
+    }
+}
+val env = file(".env")
+    .readLines()
+    .associate {
+        val (k, v) = it.split("=", limit = 2)
+        k to v
+    }
+
+publishMods {
+    file.set(tasks.remapJar.flatMap { it.archiveFile })
+    type.set(STABLE)
+    changelog.set("")
+    modLoaders.add("fabric")
+
+    modrinth {
+        projectId.set("CyJJ10KQ")
+        accessToken.set(env["MODRINTH_TOKEN"])
+
+        environment.set(CLIENT_ONLY)
+
+        minecraftVersionRange {
+            start.set(minecraft_version)
+            end.set(minecraft_higher_version)
+        }
+
+        requires {
+            slug.set("screenapi")
+
+            version.set(screenapi_version)
+        }
+        requires("modmenu")
+        requires("fabric-api")
     }
 }
