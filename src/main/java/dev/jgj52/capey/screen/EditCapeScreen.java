@@ -116,10 +116,16 @@ public class EditCapeScreen extends BetterScreen {
         }
 
         try {
-            NativeImage image = cape.getImage();
+            int W = cape.getImage().getWidth();
+            int H = cape.getImage().getHeight();
 
-            int W = image.getWidth();
-            int H = image.getHeight();
+            NativeImage image = new NativeImage(W, H, false);
+
+            for (int y = 0; y < H; y++) {
+                for (int x = 0; x < W; x++) {
+                    image.setPixel(x, y, cape.getImage().getPixel(x, y));
+                }
+            }
 
             BoardWidget board = widget(new BoardWidget(
                     width / 2 - W * BoardWidget.scale / 2,
@@ -462,6 +468,7 @@ public class EditCapeScreen extends BetterScreen {
                                         try {
                                             Path temp = Files.createTempFile("capey", ".png");
                                             image.writeToFile(temp);
+                                            image.close();
 
                                             byte[] png = Files.readAllBytes(temp);
                                             Files.deleteIfExists(temp);
