@@ -141,15 +141,16 @@ public class Cape {
         return path;
     }
 
-    private void registerTextures() {
+    public void registerTextures() {
         mc.execute(() -> {
             try {
-                NativeImage img = NativeImage.read(Files.newInputStream(path));
                 Identifier identifier = Identifier.fromNamespaceAndPath("capey", "capes/" + uuid);
+                mc.getTextureManager().release(identifier);
+
+                NativeImage img = NativeImage.read(Files.newInputStream(path));
                 DynamicTexture texture = new DynamicTexture(() -> "capey:capes/" + uuid, img);
 
                 mc.getTextureManager().register(identifier, texture);
-                texture.upload();
                 this.identifier = identifier;
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -163,7 +164,7 @@ public class Cape {
             if (getIdentifier() == null) return orig;
             return new PlayerSkin(
                     orig.body(),
-                    new TextureImpl(getIdentifier()), changesElytra() ? new TextureImpl(getIdentifier()) : orig.elytra(),
+                    new TextureImpl(getIdentifier()), changesElytra() ? new TextureImpl(getIdentifier()) : orig.elytra() == null ? orig.cape() : orig.elytra(),
                     orig.model(),
                     orig.secure()
             );
