@@ -503,6 +503,7 @@ public class EditCapeScreen extends BetterScreen {
                                                         cape.setName(name.getValue());
                                                         cape.changesElytra(elytra.get());
                                                         image.writeToFile(cape.getPath());
+                                                        cape.registerTextures();
                                                         Cape.all(true);
                                                         mc.execute(this::onClose);
                                                     }
