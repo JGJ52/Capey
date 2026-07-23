@@ -1,4 +1,4 @@
-package dev.jgj52.capey.mixin;
+package dev.jgj52.capey.mixin.suppport;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.jgj52.capey.widget.PlayerWithCapeWidget;

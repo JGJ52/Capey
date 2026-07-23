@@ -7,7 +7,7 @@
     "PlayerInfoMixin",
     "ConnectionMixin",
     "WingsLayerMixin",
-    "WaveyCapesMixin"
+    "suppport.WaveyCapesMixin"
   ],
   "client": [
   ],
