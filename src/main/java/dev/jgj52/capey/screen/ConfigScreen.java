@@ -172,7 +172,7 @@ public class ConfigScreen extends BetterScreen {
                         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
                         if (response.statusCode() != 200) {
-                            throw new RuntimeException(response.body());
+                            System.out.println(response.body());
                         }
                     } catch (Exception e) {
                         throw new RuntimeException(e);

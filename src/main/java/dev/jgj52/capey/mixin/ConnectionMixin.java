@@ -18,7 +18,7 @@ import static dev.jgj52.capey.Capey.tokens;
 @Mixin(Connection.class)
 public class ConnectionMixin {
     @Inject(method = "channelRead0(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/protocol/Packet;)V", at = @At("HEAD"))
-    private void onKick(ChannelHandlerContext ctx, Packet<?> packet, CallbackInfo ci) {
+    private void capey$onKick(ChannelHandlerContext ctx, Packet<?> packet, CallbackInfo ci) {
         if (packet instanceof ClientboundLoginDisconnectPacket(Component reason)) {
             Connection connection = (Connection) (Object) this;
 

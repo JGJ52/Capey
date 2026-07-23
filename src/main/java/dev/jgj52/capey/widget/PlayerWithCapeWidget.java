@@ -49,6 +49,8 @@ public class PlayerWithCapeWidget extends AbstractWidget {
         public AvatarRenderState state() {
             AvatarRenderState state = new AvatarRenderState();
             state.skin = skin.get();
+            state.showCape = true;
+
             state.elytraRotX = 0.25f;
             state.elytraRotY = -0.01f;
             state.elytraRotZ = -0.275f;

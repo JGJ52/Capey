@@ -12,15 +12,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(PlayerInfo.class)
 public class PlayerInfoMixin {
     @Inject(method = "getSkin", at = @At("RETURN"), cancellable = true)
-    private void getSkin(CallbackInfoReturnable<PlayerSkin> cir) {
+    private void capey$getSkin(CallbackInfoReturnable<PlayerSkin> cir) {
         PlayerSkin original = cir.getReturnValue();
         PlayerInfo info = (PlayerInfo) (Object) this;
         Player player = Player.of(info.getProfile().id());
         Cape cape = player.getCape();
 
         if (cape == null) return;
-
-        System.out.println(cape.changesElytra());
 
         cir.setReturnValue(cape.fromSkin(() -> original).get());
     }

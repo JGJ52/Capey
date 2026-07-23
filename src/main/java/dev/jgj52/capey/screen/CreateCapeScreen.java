@@ -451,6 +451,7 @@ public class CreateCapeScreen extends BetterScreen {
                                         }
                                         Path temp = Files.createTempFile("capey", ".png");
                                         image.writeToFile(temp);
+                                        image.close();
 
                                         byte[] png = Files.readAllBytes(temp);
                                         Files.deleteIfExists(temp);
@@ -543,21 +544,18 @@ public class CreateCapeScreen extends BetterScreen {
     }
 
     private void preview(BoardWidget board, int w, int h) {
-        if (texture != null) texture.close();
-        try (NativeImage image = new NativeImage(w, h, false)) {
-            for (int y = 0; y < h; y++) {
-                for (int x = 0; x < w; x++) {
-                    image.setPixel(x, y, board.getColor(y * w + x));
-                }
-            }
-            texture = new DynamicTexture(() -> "capey:preview", image);
-            mc.getTextureManager().register(Identifier.fromNamespaceAndPath("capey", "preview"),
-                    texture
-            );
-            texture.upload();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        if (texture == null) {
+            texture = new DynamicTexture(() -> "capey:preview", w, h, false);
+            mc.getTextureManager().register(Identifier.fromNamespaceAndPath("capey", "preview"), texture);
         }
+
+        NativeImage img = texture.getPixels();
+        for (int y = 0; y < h; y++) {
+            for (int x = 0; x < w; x++) {
+                img.setPixel(x, y, board.getColor(y * w + x));
+            }
+        }
+        texture.upload();
     }
 
     @Override

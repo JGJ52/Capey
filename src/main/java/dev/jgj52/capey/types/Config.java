@@ -37,8 +37,9 @@ public class Config {
     }
 
     public void save() {
+        byte[] bytes = gson.toJson(content).getBytes();
         try (FileOutputStream fos = new FileOutputStream(file)) {
-            fos.write(gson.toJson(content).getBytes());
+            fos.write(bytes);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -49,6 +50,7 @@ public class Config {
         if (file.exists()) {
             try (FileInputStream fin = new FileInputStream(file)) {
                 content = gson.fromJson(new InputStreamReader(fin), JsonObject.class);
+                if (content == null) content = new JsonObject();
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

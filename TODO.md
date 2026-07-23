@@ -5,8 +5,8 @@
 - delete cape option
 - ~~edit cape option~~
 - explain what the colors mean on the cape editor
-- fix preview
-- fix skins
+- fix preview -- this only happens if waveycapes is installed, hopefully tomorrow tr7zw can help me fix this
+- ~~fix skins~~
 - ~~ability to change the cape's name~~
 - steal cape option (puts you in an editor with the stolen cape's texture)
 - ~~if api is down the game cant launch~~

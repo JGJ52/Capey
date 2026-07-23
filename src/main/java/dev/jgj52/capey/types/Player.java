@@ -10,6 +10,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.*;
 import java.util.function.Supplier;
@@ -28,10 +29,21 @@ public class Player {
     private static final Semaphore semaphore = new Semaphore(5); // i like the server alive
 
     private final UUID uuid;
+    private GameProfile profile;
+    private Supplier<PlayerSkin> skin;
     private volatile UUID cape;
 
     private Player(UUID uuid) {
         this.uuid = uuid;
+        profile = new GameProfile(uuid, "");
+        skin = mc.getSkinManager().createLookup(profile, true);
+        fetcher.submit(() -> {
+            Optional<GameProfile> opt = mc.services().profileResolver().fetchById(uuid);
+            profile = opt.orElse(profile);
+            mc.execute(() ->
+                skin = mc.getSkinManager().createLookup(profile, true)
+            );
+        });
         reFetch();
     }
 
@@ -68,8 +80,7 @@ public class Player {
     }
 
     public Supplier<PlayerSkin> getSkin() {
-        GameProfile profile = new GameProfile(uuid, "");
-        return mc.getSkinManager().createLookup(profile, true);
+        return () -> skin.get();
     }
 
     public UUID getUUID() {

@@ -60,7 +60,6 @@ public class Cape {
     private static final Semaphore semaphore = new Semaphore(5);
 
     private final UUID uuid;
-    private final Path path;
     private NativeImage image;
     private volatile Identifier identifier;
     private volatile String name;
@@ -69,11 +68,6 @@ public class Cape {
 
     private Cape(UUID uuid) {
         this.uuid = uuid;
-        try {
-            path = Files.createTempFile(uuid.toString() + "-", ".capey");
-        } catch (java.io.IOException e) {
-            throw new RuntimeException(e);
-        }
         reFetch();
     }
 
@@ -107,13 +101,13 @@ public class Cape {
                     identifier = null;
                 }
                 if (response.statusCode() == 200) {
-                    Files.write(path, response.body());
                     mc.execute(() -> {
                         try {
                             Identifier identifier = Identifier.fromNamespaceAndPath("capey", "capes/" + uuid);
                             mc.getTextureManager().release(identifier);
 
-                            image = NativeImage.read(Files.newInputStream(path));
+                            if (image != null) image.close();
+                            image = NativeImage.read(response.body());
                             DynamicTexture texture = new DynamicTexture(() -> "capey:capes/" + uuid, image);
 
                             mc.getTextureManager().register(identifier, texture);
@@ -121,14 +115,6 @@ public class Cape {
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
-
-                        fetcher.submit(() -> {
-                            try {
-                                Files.delete(path);
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
-                            }
-                        });
                     });
                 }
                 name = response.headers().firstValue("X-Cape-Name").orElse("");
