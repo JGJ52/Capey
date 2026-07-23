@@ -1,7 +1,7 @@
 package dev.jgj52.capey.mixin;
 
-import dev.jgj52.capey.types.Cape;
-import dev.jgj52.capey.types.Player;
+import dev.jgj52.capey.util.Cape;
+import dev.jgj52.capey.util.Player;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.world.entity.player.PlayerSkin;
 import org.spongepowered.asm.mixin.Mixin;

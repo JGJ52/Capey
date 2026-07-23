@@ -7,7 +7,7 @@
     "PlayerInfoMixin",
     "ConnectionMixin",
     "WingsLayerMixin",
-    "suppport.WaveyCapesMixin"
+    "hu.jgj52.screenapi.mixin.WaveyCapesMixin"
   ],
   "client": [
   ],

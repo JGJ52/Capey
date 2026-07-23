@@ -10,9 +10,6 @@
   "icon": "assets/capey/icon.png",
   "environment": "client",
   "entrypoints": {
-    "client": [
-      "dev.jgj52.capey.client.CapeyClient"
-    ],
     "main": [
       "dev.jgj52.capey.Capey"
     ],

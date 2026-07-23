@@ -2,8 +2,8 @@ package dev.jgj52.capey.config; // idk why put this here
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import dev.jgj52.capey.types.Cape;
-import dev.jgj52.capey.types.Player;
+import dev.jgj52.capey.util.Cape;
+import dev.jgj52.capey.util.Player;
 
 import java.net.URI;
 import java.net.http.HttpClient;

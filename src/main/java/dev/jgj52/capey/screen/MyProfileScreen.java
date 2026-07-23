@@ -1,6 +1,6 @@
 package dev.jgj52.capey.screen;
 
-import dev.jgj52.capey.types.Cape;
+import dev.jgj52.capey.util.Cape;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.User;
 import net.minecraft.client.gui.Font;
@@ -12,7 +12,7 @@ import net.minecraft.network.chat.Component;
 
 import java.util.UUID;
 
-import static dev.jgj52.capey.version.VScreen.setScreen;
+import static dev.jgj52.screenapi.version.VScreen.setScreen;
 
 public class MyProfileScreen extends ProfileScreen {
     private static final Minecraft mc = Minecraft.getInstance();

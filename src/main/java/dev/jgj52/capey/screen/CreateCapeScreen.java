@@ -3,10 +3,10 @@ package dev.jgj52.capey.screen;
 import com.google.common.net.HttpHeaders;
 import com.mojang.blaze3d.platform.NativeImage;
 import dev.jgj52.capey.Capey;
-import dev.jgj52.capey.types.Cape;
-import dev.jgj52.capey.widget.BoardWidget;
-import dev.jgj52.capey.widget.PlayerWithCapeWidget;
-import hu.jgj52.screenapi.screen.BetterScreen;
+import dev.jgj52.capey.util.Cape;
+import dev.jgj52.screenapi.widget.BoardWidget;
+import dev.jgj52.screenapi.widget.PlayerWithCapeWidget;
+import dev.jgj52.screenapi.screen.BetterScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -34,7 +34,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
-import static dev.jgj52.capey.version.VScreen.setScreen;
+import static dev.jgj52.screenapi.version.VScreen.setScreen;
 
 public class CreateCapeScreen extends BetterScreen {
     private static final Minecraft mc = Minecraft.getInstance();

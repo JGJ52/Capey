@@ -10,8 +10,7 @@ val minecraft_version = project.properties["minecraft_version"] as String
 val minecraft_higher_version = project.properties["minecraft_higher_version"] as String
 val loader_version = project.properties["loader_version"] as String
 
-val fabricapi_version = project.properties["fabricapi_version"] as String
-val screenapi_version = project.properties["screenapi_version"] as String
+val screenapi_version = (project.properties["screenapi_version"] as String) + "+" + (project.properties["screenapi_mc_version"] as String)
 
 val mixins_file = project.properties["mixins_file"] as String
 
@@ -23,9 +22,6 @@ stonecutter {
     }
     replacements.string(current.parsed >= "26.1") {
         replace("GuiGraphics", "GuiGraphicsExtractor")
-    }
-    replacements.string(current.parsed >= "26.1") {
-        replace("renderWidget", "extractWidgetRenderState")
     }
 }
 
@@ -45,9 +41,7 @@ dependencies {
     minecraft("com.mojang:minecraft:${minecraft_version}")
     implementation("net.fabricmc:fabric-loader:${loader_version}")
 
-    implementation("net.fabricmc.fabric-api:fabric-api:${fabricapi_version}")
     implementation(fletchingTable.modrinth("modmenu", minecraft_version, "fabric"))
-    compileOnly(fletchingTable.modrinth("wavey-capes", minecraft_version, "fabric"))
     implementation("maven.modrinth:screenapi:${screenapi_version}")
 }
 
@@ -134,6 +128,5 @@ publishMods {
             version.set(screenapi_version)
         }
         requires("modmenu")
-        requires("fabric-api")
     }
 }

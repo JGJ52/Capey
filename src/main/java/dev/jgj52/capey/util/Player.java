@@ -1,4 +1,4 @@
-package dev.jgj52.capey.types;
+package dev.jgj52.capey.util;
 
 import com.mojang.authlib.GameProfile;
 import dev.jgj52.capey.Capey;

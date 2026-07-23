@@ -1,4 +1,4 @@
-package dev.jgj52.capey.types;
+package dev.jgj52.capey.util;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -12,13 +12,10 @@ import net.minecraft.world.entity.player.PlayerSkin;
 import net.minecraft.core.ClientAsset;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.URI;
 import java.net.http.HttpClient;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.Supplier;
