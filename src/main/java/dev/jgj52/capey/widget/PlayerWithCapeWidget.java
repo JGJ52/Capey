@@ -46,20 +46,25 @@ public class PlayerWithCapeWidget extends AbstractWidget {
             config.save();
         }
 
-        public AvatarRenderState state() {
-            AvatarRenderState state = new AvatarRenderState();
-            state.skin = skin.get();
-            state.showCape = true;
+        private WAvatarRenderState state;
+        public WAvatarRenderState state() {
+            if (state == null) {
+                state = new WAvatarRenderState();
+                state.showCape = true;
 
-            state.elytraRotX = 0.25f;
-            state.elytraRotY = -0.01f;
-            state.elytraRotZ = -0.275f;
-            if (elytra) {
-                state.chestEquipment = ely();
+                state.elytraRotX = 0.25f;
+                state.elytraRotY = -0.01f;
+                state.elytraRotZ = -0.275f;
             }
+
+            state.skin = skin.get();
+            state.chestEquipment = elytra ? ely() : ItemStack.EMPTY;
+
             return state;
         }
     }
+
+    public static class WAvatarRenderState extends AvatarRenderState {}
 
     private final FakePlayer player;
     private final int scale;

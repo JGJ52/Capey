@@ -48,6 +48,7 @@ dependencies {
 
     modImplementation("net.fabricmc.fabric-api:fabric-api:${fabricapi_version}")
     modImplementation(fletchingTable.modrinth("modmenu", minecraft_version, "fabric"))
+    compileOnly(fletchingTable.modrinth("wavey-capes", minecraft_version, "fabric"))
     modImplementation("maven.modrinth:screenapi:${screenapi_version}")
 }
 

@@ -6,7 +6,8 @@
   "mixins": [
     "ConnectionMixin",
     "PlayerInfoMixin",
-    "WingsLayerMixin"
+    "WingsLayerMixin",
+    "WaveyCapesMixin"
   ],
   "client": [
   ],
