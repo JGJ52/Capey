@@ -17,14 +17,14 @@ While Modrinth is reviewing, download JARs from here:
 
 ### Linux/macOS
 ```sh
-git clone https://codeberg.org/Capey/Capey.git
+git clone https://git.jgj52.dev/Capey/Capey.git
 cd Capey
 ./gradlew build
 ```
 
 ### Windows
 ```powershell
-git clone https://codeberg.org/Capey/Capey.git
+git clone https://git.jgj52.dev/Capey/Capey.git
 cd Capey
 .\gradlew.bat build
 ```
