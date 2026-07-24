@@ -23,6 +23,7 @@ jobs:
         run: ./gradlew build publishMods --info
         env:
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+          MODRINTH_ID: ${{ vars.MODRINTH_ID }}
 
       - name: prepare release
         run: |

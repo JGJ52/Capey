@@ -105,7 +105,7 @@ publishMods {
     modLoaders.add("fabric")
 
     modrinth {
-        projectId.set("CyJJ10KQ")
+        projectId.set(System.getenv("MODRINTH_ID"))
         accessToken.set(System.getenv("MODRINTH_TOKEN"))
 
         environment.set(CLIENT_ONLY)
