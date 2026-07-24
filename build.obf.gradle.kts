@@ -5,8 +5,8 @@ plugins {
     `maven-publish`
 }
 
-version = project.properties["mod_version"] as String
 val minecraft_version = project.properties["minecraft_version"] as String
+version = project.properties["mod_version"] as String + "+" + minecraft_version
 val minecraft_higher_version = project.properties["minecraft_higher_version"] as String
 val loader_version = project.properties["loader_version"] as String
 
@@ -98,12 +98,6 @@ publishing {
         // Add publishing repositories here
     }
 }
-val env = file(".env")
-    .readLines()
-    .associate {
-        val (k, v) = it.split("=", limit = 2)
-        k to v
-    }
 
 publishMods {
     file.set(tasks.remapJar.flatMap { it.archiveFile })
@@ -113,7 +107,7 @@ publishMods {
 
     modrinth {
         projectId.set("CyJJ10KQ")
-        accessToken.set(env["MODRINTH_TOKEN"])
+        accessToken.set(System.getenv("MODRINTH_TOKEN"))
 
         environment.set(CLIENT_ONLY)
 
