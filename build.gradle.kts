@@ -1,5 +1,5 @@
 plugins {
-    id("fabric-loom") version "1.16-SNAPSHOT"
+    id("dev.kikugie.loom-back-compat") version "0.4.1"
     id("dev.kikugie.fletching-table.fabric") version "0.1.0-alpha.22"
     id("me.modmuss50.mod-publish-plugin") version "2.1.1"
     `maven-publish`
@@ -10,9 +10,7 @@ version = project.properties["mod_version"] as String + "+" + minecraft_version
 val minecraft_higher_version = project.properties["minecraft_higher_version"] as String
 val loader_version = project.properties["loader_version"] as String
 
-val screenapi_version = (project.properties["screenapi_version"] as String) + "+" + (project.properties["screenapi_mc_version"] as String)
-
-val mixins_file = project.properties["mixins_file"] as String
+val screenapi_version = project.properties["screenapi_version"] as String + "+" + project.properties["screenapi_mc_version"] as String
 
 group = project.properties["maven_group"] as String
 
@@ -39,20 +37,26 @@ repositories {
 
 dependencies {
     minecraft("com.mojang:minecraft:${minecraft_version}")
-    mappings(loom.officialMojangMappings())
+    loomx.applyMojangMappings()
+
     modImplementation("net.fabricmc:fabric-loader:${loader_version}")
 
     modImplementation(fletchingTable.modrinth("modmenu", minecraft_version, "fabric"))
     modImplementation("maven.modrinth:screenapi:${screenapi_version}")
 }
 
+val targetJavaVersion = when {
+    sc.current.parsed >= "26.1" -> 25
+    else -> 21
+}
 tasks.processResources {
     inputs.property("version", version)
     inputs.property("minecraft_version", minecraft_version)
     inputs.property("minecraft_higher_version", minecraft_higher_version)
     inputs.property("loader_version", loader_version)
     inputs.property("screenapi_version", screenapi_version)
-    inputs.property("mixins_file", mixins_file)
+
+    inputs.property("java_version", "JAVA_${targetJavaVersion}")
     filteringCharset = "UTF-8"
 
     filesMatching("fabric.mod.json") {
@@ -61,13 +65,16 @@ tasks.processResources {
             "minecraft_version" to minecraft_version,
             "minecraft_higher_version" to minecraft_higher_version,
             "loader_version" to loader_version,
-            "screenapi_version" to screenapi_version,
-            "mixins_file" to mixins_file
+            "screenapi_version" to screenapi_version
+        )
+    }
+
+    filesMatching("mixins.json") {
+        expand(
+            "java_version" to "JAVA_${targetJavaVersion}"
         )
     }
 }
-
-val targetJavaVersion = 21
 tasks.withType<JavaCompile>().configureEach {
     options.encoding = "UTF-8"
     options.release.set(targetJavaVersion)
@@ -95,12 +102,20 @@ publishing {
         }
     }
     repositories {
-        // Add publishing repositories here
+        maven {
+            name = "Reposilite"
+            url = uri("https://maven.jgj52.dev/releases")
+
+            credentials {
+                username = System.getenv("MAVEN_USERNAME")
+                password = System.getenv("MAVEN_PASSWORD")
+            }
+        }
     }
 }
 
 publishMods {
-    file.set(tasks.remapJar.flatMap { it.archiveFile })
+    file.set(tasks.jar.flatMap { it.archiveFile })
     type.set(STABLE)
     changelog.set("")
     modLoaders.add("fabric")
@@ -116,11 +131,6 @@ publishMods {
             end.set(minecraft_higher_version)
         }
 
-        requires {
-            slug.set("screenapi")
-
-            version.set(screenapi_version)
-        }
-        requires("modmenu")
+        requires("screenapi", "modmenu")
     }
 }

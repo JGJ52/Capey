@@ -2,7 +2,7 @@
   "required": true,
   "minVersion": "0.8",
   "package": "dev.jgj52.capey.mixin",
-  "compatibilityLevel": "JAVA_25",
+  "compatibilityLevel": "${java_version}",
   "mixins": [
     "PlayerInfoMixin",
     "ConnectionMixin",
