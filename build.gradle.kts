@@ -70,7 +70,7 @@ tasks.processResources {
         )
     }
 
-    filesMatching("mixins.json") {
+    filesMatching("capey.mixins.json") {
         expand(
             "java_version" to "JAVA_${targetJavaVersion}"
         )
