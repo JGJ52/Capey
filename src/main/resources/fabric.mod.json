@@ -6,7 +6,7 @@
   "description": "Have a custom cape which others who use this mod can see too",
   "authors": ["JGJ52"],
   "contact": {},
-  "license": "GPL-3.0",
+  "license": "MIT",
   "icon": "assets/capey/icon.png",
   "environment": "client",
   "entrypoints": {
