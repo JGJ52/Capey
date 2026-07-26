@@ -20,7 +20,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: build
-        run: ./gradlew build publish publishMods --info
+        run: ./gradlew build publish publishMods
         env:
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
           MODRINTH_ID: ${{ vars.MODRINTH_ID }}
