@@ -33,6 +33,7 @@ repositories {
         filter { groups.forEach(::includeGroup) }
     }
     strictMaven("https://api.modrinth.com/maven", "Modrinth", "maven.modrinth")
+    maven("https://maven.jgj52.dev/releases")
 }
 
 dependencies {
@@ -42,7 +43,7 @@ dependencies {
     modImplementation("net.fabricmc:fabric-loader:${loader_version}")
 
     modImplementation(fletchingTable.modrinth("modmenu", minecraft_version, "fabric"))
-    modImplementation("maven.modrinth:screenapi:${screenapi_version}")
+    modImplementation("dev.jgj52:screenapi:${screenapi_version}")
 }
 
 val targetJavaVersion = when {
