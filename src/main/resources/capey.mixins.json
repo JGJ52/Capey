@@ -4,11 +4,11 @@
   "package": "dev.jgj52.capey.mixin",
   "compatibilityLevel": "${java_version}",
   "mixins": [
+  ],
+  "client": [
     "PlayerInfoMixin",
     "ConnectionMixin",
     "WingsLayerMixin"
-  ],
-  "client": [
   ],
   "injectors": {
     "defaultRequire": 1
