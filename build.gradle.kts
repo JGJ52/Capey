@@ -95,11 +95,18 @@ tasks.jar {
     }
 }
 
+val jt = when {
+    sc.current.parsed >= "26.1" -> tasks.named<AbstractArchiveTask>("jar")
+    else -> tasks.named<AbstractArchiveTask>("remapJar")
+}
+
 publishing {
     publications {
         create<MavenPublication>("mavenJava") {
             artifactId = project.properties["archives_base_name"] as String
             from(components["java"])
+
+            artifact(jt)
         }
     }
     repositories {
@@ -116,8 +123,8 @@ publishing {
 }
 
 publishMods {
-    file.set(tasks.jar.flatMap { it.archiveFile })
-    type.set(STABLE)
+    file.set(jt.flatMap { it.archiveFile })
+    type.set(ALPHA)
     changelog.set("")
     modLoaders.add("fabric")
 
