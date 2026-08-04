@@ -58,7 +58,7 @@ public class Cape {
 
     private final UUID uuid;
     private NativeImage image;
-    private volatile Identifier identifier;
+    private Identifier identifier;
     private volatile String name;
     private volatile boolean elytra;
     private volatile UUID uploader;
@@ -95,20 +95,20 @@ public class Cape {
 
                 HttpResponse<byte[]> response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
                 if (response.statusCode() == 404) {
-                    identifier = null;
+                    mc.execute(() -> identifier = null);
                 }
                 if (response.statusCode() == 200) {
                     mc.execute(() -> {
                         try {
                             Identifier identifier = Identifier.fromNamespaceAndPath("capey", "capes/" + uuid);
-                            mc.getTextureManager().release(identifier);
+                            this.identifier = identifier;
+                            unload();
 
                             if (image != null) image.close();
                             image = NativeImage.read(response.body());
                             DynamicTexture texture = new DynamicTexture(() -> "capey:capes/" + uuid, image);
 
                             mc.getTextureManager().register(identifier, texture);
-                            this.identifier = identifier;
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
@@ -123,6 +123,10 @@ public class Cape {
                 semaphore.release();
             }
         });
+    }
+
+    public void unload() {
+        mc.getTextureManager().release(identifier);
     }
 
     public Supplier<PlayerSkin> fromSkin(Supplier<PlayerSkin> original) {

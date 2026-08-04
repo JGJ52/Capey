@@ -40,7 +40,7 @@ public class ProfileScreen extends BetterScreen {
     private static final ExecutorService fetcher = Executors.newVirtualThreadPerTaskExecutor();
 
     private final Screen parent;
-    private final GameProfile player;
+    protected final GameProfile player;
     public ProfileScreen(Screen parent, AbstractClientPlayer player) {
         this.parent = parent;
         this.player = player.getGameProfile();
@@ -61,7 +61,6 @@ public class ProfileScreen extends BetterScreen {
     @Override
     protected void createWidgets(Font font) {
         Player cplayer = Player.of(player.id());
-        Cape ccape = cplayer.getCape();
         widget(new StringWidget(
                 70 - font.width(this.player.name()) / 2,
                 height / 2 - 110 - font.lineHeight,
@@ -75,7 +74,10 @@ public class ProfileScreen extends BetterScreen {
                 height / 2 - 100,
                 140,
                 200,
-                ccape != null ? ccape.fromSkin(cplayer.getSkin()) : cplayer.getSkin(),
+                () -> {
+                    Cape cape = cplayer.getCape();
+                    return cape != null ? cape.fromSkin(cplayer.getSkin()).get() : cplayer.getSkin().get();
+                },
                 80
         ), "skin", true);
         widget.rotateX(180);
@@ -83,8 +85,7 @@ public class ProfileScreen extends BetterScreen {
 
         AtomicInteger offset = new AtomicInteger();
         int perRow = mc.getWindow().getGuiScaledWidth() / 80 - 2;
-        Player local = Player.of(this.player.id());
-        selected = local::getCape;
+        selected = cplayer::getCape;
         List<PlayerWithCapeWidget> all = new ArrayList<>();
         all.add(widget);
         used = 0;
@@ -122,16 +123,16 @@ public class ProfileScreen extends BetterScreen {
                     if (background()) Capey.local.get().remove(nowUUID);
                     else Capey.local.get().addProperty(nowUUID, capeUUID);
                     Capey.local.save();
-                    local.reFetch();
+                    cplayer.reFetch();
+                    HttpRequest.BodyPublisher body =
+                            background()
+                                    ? HttpRequest.BodyPublishers.noBody()
+                                    : HttpRequest.BodyPublishers.ofString(capeUUID);
                     fetcher.submit(() -> {
                         try {
                             HttpRequest request = HttpRequest.newBuilder()
                                     .uri(new URI("https://api.capey.app/v1/player"))
-                                    .POST(
-                                            background()
-                                                    ? HttpRequest.BodyPublishers.noBody()
-                                                    : HttpRequest.BodyPublishers.ofString(capeUUID)
-                                    )
+                                    .POST(body)
                                     .header(
                                             HttpHeaders.AUTHORIZATION,
                                             Capey.tokens.get().has(nowUUID)

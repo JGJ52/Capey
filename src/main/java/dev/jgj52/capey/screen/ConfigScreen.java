@@ -131,17 +131,13 @@ public class ConfigScreen extends BetterScreen {
                 skinWithCape
         ) {
             @Override
-            protected void renderPlayer(
-                    @NotNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a
-            ) {
+            protected void renderPlayer(@NotNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
                 super.renderPlayer(graphics, mouseX, mouseY, a);
 
-                if (selected.get() == cape && !background()) {
-                    all.forEach(w -> w.background(false));
-                    background(true);
-                } else if (selected.get() == null && background()) {
-                    background(false);
-                }
+                Cape current = selected.get();
+                background(current != null && current.getUUID().equals(cape.getUUID()));
+
+                super.renderPlayer(graphics, mouseX, mouseY, a);
             }
 
             @Override
@@ -152,15 +148,14 @@ public class ConfigScreen extends BetterScreen {
                 else Capey.local.get().addProperty(nowUUID, capeUUID);
                 Capey.local.save();
                 local.reFetch();
+                HttpRequest.BodyPublisher body = background()
+                        ? HttpRequest.BodyPublishers.noBody()
+                        : HttpRequest.BodyPublishers.ofString(capeUUID);
                 fetcher.submit(() -> {
                     try {
                         HttpRequest request = HttpRequest.newBuilder()
                                 .uri(new URI("https://api.capey.app/v1/player"))
-                                .POST(
-                                        background()
-                                                ? HttpRequest.BodyPublishers.noBody()
-                                                : HttpRequest.BodyPublishers.ofString(capeUUID)
-                                )
+                                .POST(body)
                                 .header(
                                         HttpHeaders.AUTHORIZATION,
                                         Capey.tokens.get().has(nowUUID)

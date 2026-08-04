@@ -61,6 +61,12 @@ public class WebSocket implements java.net.http.WebSocket.Listener {
                 JsonObject cape = gson.fromJson(message.split(" ", 2)[1], JsonObject.class);
                 Cape.add(cape);
             }
+            case "delete": {
+                UUID uuid = UUID.fromString(strings[1]);
+                Cape cape = Cape.of(uuid);
+
+                cape.unload();
+            }
         }
         return java.net.http.WebSocket.Listener.super.onText(webSocket, data, last);
     }

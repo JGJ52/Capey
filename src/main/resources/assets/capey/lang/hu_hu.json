@@ -6,6 +6,7 @@
   "capey.config.my.create": "Új köpeny készítése",
   "capey.config.my.remaining": "%s felhasználva a %s köpenyből",
   "capey.config.my.edit": "Kiválasztott köpeny szerkesztése",
+  "capey.config.my.delete": "Kiválasztott köpeny törlése",
   "capey.config.create.upload": "Köpeny feltöltése",
   "capey.config.create.elytra": "Köpeny megváltoztatja az elytra textúráját: %s",
   "capey.config.edit.save": "Mentés",

@@ -6,6 +6,7 @@
   "capey.config.my.create": "Create cape",
   "capey.config.my.remaining": "%s capes used of %s",
   "capey.config.my.edit": "Edit selected cape",
+  "capey.config.my.delete": "Delete selected cape",
   "capey.config.create.upload": "Upload cape",
   "capey.config.create.elytra": "Cape changes elytra texture: %s",
   "capey.config.edit.save": "Save",
