@@ -2,7 +2,7 @@
 - ~~color preview bar~~
 - ~~select if cape should change elytra texture or no~~
 - button to put default elytra texture
-- delete cape option
+- ~~delete cape option~~
 - ~~edit cape option~~
 - explain what the colors mean on the cape editor
 - ~~fix preview -- this only happens if waveycapes is installed, hopefully tomorrow tr7zw can help me fix this~~
