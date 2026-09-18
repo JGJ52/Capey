@@ -11,3 +11,4 @@
 - steal cape option (puts you in an editor with the stolen cape's texture)
 - ~~if api is down the game cant launch~~
 - you can select a banner in your inventory and it puts it on a cape by some logic
+- make banners on elytra look like it was made for an elytra
