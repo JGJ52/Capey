@@ -546,11 +546,11 @@ public class EditCapeScreen extends BetterScreen {
             this.integer = integer;
         }
 
-        //? >= 1.21.11 {
+        //? if >= 1.21.11 {
         @Override
                 //? }
         public void setValue(double newValue) {
-            //? >= 1.21.11 {
+            //? if >= 1.21.11 {
             super.setValue(newValue);
             //? } else {
             /*value = newValue;
