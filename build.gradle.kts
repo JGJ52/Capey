@@ -8,7 +8,7 @@ plugins {
 val minecraft_version = project.property("minecraft_version") as String
 version = project.property("mod_version") as String + "+" + minecraft_version
 val minecraft_higher_version = project.property("minecraft_higher_version") as String
-val loader_version = project.property("loader_vesion") as String
+val loader_version = project.property("loader_version") as String
 
 val screenapi_version = project.property("screenapi_version") as String + "+" + project.property("screenapi_mc_version") as String
 
