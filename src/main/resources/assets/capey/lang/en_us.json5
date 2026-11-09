@@ -1,0 +1,32 @@
+{
+    "capey": {
+        "config": {
+            "main": {
+                "reload": "Reload capes",
+                "profile": "My profile",
+                "level": "You need to be at least once in a world since game start to be able to toggle elytra.",
+                "elytra": "Toggle elytra",
+            },
+            "my": {
+                "create": "Create cape",
+                "remaining": "%s capes used of %s",
+                "edit": "Edit selected cape",
+                "delete": "Delete selected cape",
+            },
+            "create": {
+                "create.upload": "Upload cape",
+                "create.elytra": "Cape changes elytra texture: %s",
+            },
+            "edit": {
+                "save": "Save",
+            },
+        },
+        "message": {
+            "token": {
+                "your": "Your Capey token is:",
+                "share": "Do NOT share this with anyone!",
+                "auto": "Capey automatically saved this token.",
+            },
+        },
+    },
+}

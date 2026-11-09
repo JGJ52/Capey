@@ -1,0 +1,32 @@
+{
+    "capey": {
+        "config": {
+            "main": {
+                "reload": "Köpenyek újratöltése",
+                "profile": "Én profilom",
+                "level": "Egyszer be kell lépned egy világba a játék elindítása óta, hogy láthass kitinszárnyakat.",
+                "elytra": "Kitinszárnyak ki/bekapcsolása"
+            },
+            "my": {
+                "create": "Új köpeny készítése",
+                "remaining": "%s felhasználva a %s köpenyből",
+                "edit": "Kiválasztott köpeny szerkesztése",
+                "delete": "Kiválasztott köpeny törlése"
+            },
+            "create": {
+                "upload": "Köpeny feltöltése",
+                "elytra": "Köpeny megváltoztatja az elytra textúráját: %s"
+            },
+            "edit": {
+                "save": "Mentés"
+            }
+        },
+        "message": {
+            "token": {
+                "your": "A Capey tokened:",
+                "share": "NE oszd meg ezt senkivel!",
+                "auto": "A token automatikusan le lett mentve."
+            }
+        },
+    }
+}

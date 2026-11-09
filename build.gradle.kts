@@ -1,7 +1,9 @@
+import dev.kikugie.fletching_table.mod.ModLoader
+
 plugins {
-    id("dev.kikugie.loom-back-compat") version "0.4.1"
-    id("dev.kikugie.fletching-table.fabric") version "0.1.0-alpha.22"
-    id("me.modmuss50.mod-publish-plugin") version "2.1.1"
+    id("dev.kikugie.loom-back-compat")
+    id("me.modmuss50.mod-publish-plugin") version "2.2.1"
+    alias(ft.plugins.default)
     `maven-publish`
 }
 
@@ -25,6 +27,10 @@ stonecutter {
     }
 }
 
+fletchingTable {
+    lang.configure(sourceSets.main) {}
+}
+
 base {
     archivesName.set(archives_base_name)
 }
@@ -39,12 +45,15 @@ repositories {
 }
 
 dependencies {
+    fletchingTable.loader = ModLoader.FABRIC
+    fletchingTable.minecraft = minecraft_version
+
     minecraft("com.mojang:minecraft:${minecraft_version}")
     loomx.applyMojangMappings()
 
     modImplementation("net.fabricmc:fabric-loader:${loader_version}")
 
-    modImplementation(fletchingTable.modrinth("modmenu", minecraft_version, "fabric"))
+    modImplementation(fletchingTable.modrinth("modmenu")!!)
     modImplementation("dev.jgj52:screenapi:${screenapi_version}")
 }
 
