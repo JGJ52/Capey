@@ -5,14 +5,16 @@ plugins {
     `maven-publish`
 }
 
-val minecraft_version = project.properties["minecraft_version"] as String
-version = project.properties["mod_version"] as String + "+" + minecraft_version
-val minecraft_higher_version = project.properties["minecraft_higher_version"] as String
-val loader_version = project.properties["loader_version"] as String
+val minecraft_version = project.property("minecraft_version") as String
+version = project.property("mod_version") as String + "+" + minecraft_version
+val minecraft_higher_version = project.property("minecraft_higher_version") as String
+val loader_version = project.property("loader_vesion") as String
 
-val screenapi_version = project.properties["screenapi_version"] as String + "+" + project.properties["screenapi_mc_version"] as String
+val screenapi_version = project.property("screenapi_version") as String + "+" + project.property("screenapi_mc_version") as String
 
-group = project.properties["maven_group"] as String
+val archives_base_name = project.property("archives_base_name") as String
+
+group = project.property("maven_group") as String
 
 stonecutter {
     replacements.string(current.parsed >= "1.21.11") {
@@ -24,7 +26,7 @@ stonecutter {
 }
 
 base {
-    archivesName.set(project.properties["archives_base_name"] as String)
+    archivesName.set(archives_base_name)
 }
 
 repositories {
@@ -70,7 +72,7 @@ tasks.processResources {
         )
     }
 
-    filesMatching("${project.properties["archives_base_name"]}.mixins.json") {
+    filesMatching("${archives_base_name}.mixins.json") {
         expand(
             "java_version" to "JAVA_${targetJavaVersion}"
         )
@@ -91,14 +93,14 @@ java {
 
 tasks.jar {
     from("LICENSE") {
-        rename { "${it}_${project.properties["archives_base_name"]}" }
+        rename { "${it}_${archives_base_name}" }
     }
 }
 
 publishing {
     publications {
         create<MavenPublication>("mavenJava") {
-            artifactId = project.properties["archives_base_name"] as String
+            artifactId = archives_base_name
             from(components["java"])
         }
     }
