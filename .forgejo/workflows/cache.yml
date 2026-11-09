@@ -1,0 +1,30 @@
+name: Warm Cache
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  cache:
+    runs-on: java
+
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+
+      - name: make gradle wrapper executable
+        run: chmod +x ./gradlew
+
+      - name: cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', '**/gradle.properties', '**/libs.versions.toml') }}
+          restore-keys: |
+            gradle-${{ runner.os }}-
+
+      - name: build
+        run: ./gradlew build
