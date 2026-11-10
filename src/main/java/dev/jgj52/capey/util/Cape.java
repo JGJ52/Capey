@@ -1,9 +1,11 @@
 package dev.jgj52.capey.util;
 
+import com.google.common.net.HttpHeaders;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.platform.NativeImage;
+import dev.jgj52.capey.Capey;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.resources.*;
@@ -19,6 +21,9 @@ import java.net.http.HttpClient;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
+import static dev.jgj52.capey.Capey.local;
 
 public class Cape {
     private static final ExecutorService fetcher = Executors.newVirtualThreadPerTaskExecutor();
@@ -56,6 +61,153 @@ public class Cape {
     }
     private static final Semaphore semaphore = new Semaphore(5);
 
+    public static CompletableFuture<Boolean> createCape(String name, boolean elytra, byte[] png) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                semaphore.acquire();
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(new URI("https://api.capey.app/v1/cape"))
+                        .POST(
+                                HttpRequest.BodyPublishers.ofByteArray(png)
+                        )
+                        .header(
+                                HttpHeaders.AUTHORIZATION,
+                                Player.getToken()
+                        )
+                        .header(
+                                HttpHeaders.CONTENT_TYPE,
+                                "image/png"
+                        )
+                        .header(
+                                "X-Cape-Name",
+                                name
+                        )
+                        .header(
+                                "X-Cape-Change-Elytra",
+                                String.valueOf(elytra)
+                        )
+                        .build();
+
+                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+                if (response.statusCode() != 200) {
+                    System.out.println(response.statusCode());
+                    System.out.println(response.body());
+                } else {
+                    return true;
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            } finally {
+                semaphore.release();
+            }
+            return false;
+        }, fetcher);
+    }
+    public static HttpResponse<byte[]> fetchCape(UUID cape, Map<String, String> headers) {
+        fetcher.submit(() -> {
+            try {
+                semaphore.acquire();
+                HttpRequest.Builder builder = HttpRequest.newBuilder()
+                        .uri(new URI("https://api.capey.app/v1/cape/" + cape))
+                        .GET();
+
+                headers.forEach(builder::header);
+
+                return client.send(builder.build(), HttpResponse.BodyHandlers.ofByteArray());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            } finally {
+                semaphore.release();
+            }
+        });
+        return null;
+    }
+    public static HttpResponse<byte[]> fetchCape(UUID cape) {
+        return fetchCape(cape, Map.of());
+    }
+    public static CompletableFuture<Boolean> editCape(UUID uuid, String name, boolean elytra, byte[] png) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                semaphore.acquire();
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(new URI("https://api.capey.app/v1/cape/" + uuid))
+                        .POST(
+                                HttpRequest.BodyPublishers.ofByteArray(png)
+                        )
+                        .header(
+                                HttpHeaders.AUTHORIZATION,
+                                Player.getToken()
+                        )
+                        .header(
+                                HttpHeaders.CONTENT_TYPE,
+                                "image/png"
+                        )
+                        .header(
+                                "X-Cape-Name",
+                                name
+                        )
+                        .header(
+                                "X-Cape-Change-Elytra",
+                                String.valueOf(elytra)
+                        )
+                        .build();
+
+                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+                if (response.statusCode() != 200) {
+                    System.out.println(response.statusCode());
+                    System.out.println(response.body());
+                } else {
+                    return true;
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            } finally {
+                semaphore.release();
+            }
+            return false;
+        }, fetcher);
+    }
+    public static CompletableFuture<Boolean> deleteCape(UUID uuid) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                semaphore.acquire();
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(new URI("https://api.capey.app/v1/cape/" + uuid))
+                        .DELETE()
+                        .header(
+                                HttpHeaders.AUTHORIZATION,
+                                Player.getToken()
+                        )
+                        .build();
+
+                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+                if (response.statusCode() != 200) {
+                    System.out.println(response.statusCode());
+                    System.out.println(response.body());
+                } else {
+                    return true;
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            } finally {
+                semaphore.release();
+            }
+            return false;
+        }, fetcher);
+    }
+
+    public static Identifier loadCape(UUID cape, NativeImage image) {
+        Identifier identifier = Identifier.fromNamespaceAndPath("capey", "capes/" + cape);
+
+        DynamicTexture texture = new DynamicTexture(() -> "capey:capes/" + cape, image);
+        mc.getTextureManager().register(identifier, texture);
+
+        return identifier;
+    }
+
     private final UUID uuid;
     private NativeImage image;
     private Identifier identifier;
@@ -85,44 +237,31 @@ public class Cape {
     }
 
     public void reFetch() {
-        fetcher.submit(() -> {
-            try {
-                semaphore.acquire();
-                HttpRequest request = HttpRequest.newBuilder()
-                        .uri(new URI("https://api.capey.app/v1/cape/" + uuid))
-                        .GET()
-                        .build();
+        HttpResponse<byte[]> response = fetchCape(uuid);
+        if (response == null) return;
 
-                HttpResponse<byte[]> response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
-                if (response.statusCode() == 404) {
-                    mc.execute(() -> identifier = null);
+        if (response.statusCode() == 404) {
+            mc.execute(() -> {
+                unload();
+                identifier = null;
+            });
+        }
+        if (response.statusCode() == 200) {
+            mc.execute(() -> {
+                try {
+                    unload();
+                    if (image != null) image.close();
+                    image = NativeImage.read(response.body());
+
+                    this.identifier = loadCape(uuid, image);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
                 }
-                if (response.statusCode() == 200) {
-                    mc.execute(() -> {
-                        try {
-                            Identifier identifier = Identifier.fromNamespaceAndPath("capey", "capes/" + uuid);
-                            this.identifier = identifier;
-                            unload();
-
-                            if (image != null) image.close();
-                            image = NativeImage.read(response.body());
-                            DynamicTexture texture = new DynamicTexture(() -> "capey:capes/" + uuid, image);
-
-                            mc.getTextureManager().register(identifier, texture);
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
-                    });
-                }
-                name = response.headers().firstValue("X-Cape-Name").orElse("");
-                elytra = response.headers().firstValue("X-Cape-Change-Elytra").map(Boolean::parseBoolean).orElse(true);
-                uploader = response.headers().firstValue("X-Capey-Uploader").map(UUID::fromString).orElse(null);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            } finally {
-                semaphore.release();
-            }
-        });
+            });
+        }
+        name = response.headers().firstValue("X-Cape-Name").orElse("");
+        elytra = response.headers().firstValue("X-Cape-Change-Elytra").map(Boolean::parseBoolean).orElse(true);
+        uploader = response.headers().firstValue("X-Capey-Uploader").map(UUID::fromString).orElse(null);
     }
 
     public void unload() {

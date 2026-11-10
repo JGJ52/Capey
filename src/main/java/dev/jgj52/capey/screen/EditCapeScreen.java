@@ -38,8 +38,6 @@ import static dev.jgj52.screenapi.version.VScreen.setScreen;
 
 public class EditCapeScreen extends BetterScreen {
     private static final Minecraft mc = Minecraft.getInstance();
-    private static final HttpClient client = HttpClient.newHttpClient();
-    private static final ExecutorService fetcher = Executors.newVirtualThreadPerTaskExecutor();
 
     private final Screen parent;
     private final Cape cape;
@@ -472,44 +470,9 @@ public class EditCapeScreen extends BetterScreen {
                                             byte[] png = Files.readAllBytes(temp);
                                             Files.deleteIfExists(temp);
 
-                                            fetcher.submit(() -> {
-                                                try {
-                                                    String nowUUID = mc.player != null ? mc.player.getUUID().toString() : mc.getUser().getProfileId().toString();
-                                                    HttpRequest request = HttpRequest.newBuilder()
-                                                            .uri(new URI("https://api.capey.app/v1/cape/" + cape.getUUID()))
-                                                            .POST(
-                                                                    HttpRequest.BodyPublishers.ofByteArray(png)
-                                                            )
-                                                            .header(
-                                                                    HttpHeaders.AUTHORIZATION,
-                                                                    Capey.tokens.get().has(nowUUID)
-                                                                            ? Capey.tokens.get().get(nowUUID).getAsString()
-                                                                            : ""
-                                                            )
-                                                            .header(
-                                                                    HttpHeaders.CONTENT_TYPE,
-                                                                    "image/png"
-                                                            )
-                                                            .header(
-                                                                    "X-Cape-Name",
-                                                                    name.getValue()
-                                                            )
-                                                            .header(
-                                                                    "X-Cape-Change-Elytra",
-                                                                    elytra.toString()
-                                                            )
-                                                            .build();
-
-                                                    HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-                                                    if (response.statusCode() != 200) {
-                                                        System.out.println(response.statusCode());
-                                                        System.out.println(response.body());
-                                                    } else {
-                                                        mc.execute(this::onClose);
-                                                    }
-                                                } catch (Exception e) {
-                                                    e.printStackTrace();
+                                            Cape.editCape(cape.getUUID(), name.getValue(), elytra.get(), png).thenAccept(success -> {
+                                                if (success) {
+                                                    mc.execute(this::onClose);
                                                 }
                                             });
                                         } catch (Exception e) {

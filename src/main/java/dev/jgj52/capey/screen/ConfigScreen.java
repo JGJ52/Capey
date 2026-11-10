@@ -144,35 +144,15 @@ public class ConfigScreen extends BetterScreen {
             public void onClick(@NotNull MouseButtonEvent event, boolean doubleClick) {
                 String nowUUID = localUUID.toString();
                 String capeUUID = cape.getUUID().toString();
-                if (background()) Capey.local.get().remove(nowUUID);
-                else Capey.local.get().addProperty(nowUUID, capeUUID);
+                if (background()) {
+                    Capey.local.get().remove(nowUUID);
+                    Player.setCape("");
+                } else {
+                    Capey.local.get().addProperty(nowUUID, capeUUID);
+                    Player.setCape(capeUUID);
+                }
                 Capey.local.save();
                 local.reFetch();
-                HttpRequest.BodyPublisher body = background()
-                        ? HttpRequest.BodyPublishers.noBody()
-                        : HttpRequest.BodyPublishers.ofString(capeUUID);
-                fetcher.submit(() -> {
-                    try {
-                        HttpRequest request = HttpRequest.newBuilder()
-                                .uri(new URI("https://api.capey.app/v1/player"))
-                                .POST(body)
-                                .header(
-                                        HttpHeaders.AUTHORIZATION,
-                                        Capey.tokens.get().has(nowUUID)
-                                                ? Capey.tokens.get().get(nowUUID).getAsString()
-                                                : ""
-                                )
-                                .build();
-
-                        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-                        if (response.statusCode() != 200) {
-                            System.out.println(response.body());
-                        }
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                });
             }
         }));
         Component name = Component.literal(capeO.get("name").getAsString());

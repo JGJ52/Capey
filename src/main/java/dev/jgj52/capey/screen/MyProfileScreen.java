@@ -26,8 +26,6 @@ import static dev.jgj52.screenapi.version.VScreen.setScreen;
 
 public class MyProfileScreen extends ProfileScreen {
     private static final Minecraft mc = Minecraft.getInstance();
-    private static final HttpClient client = HttpClient.newHttpClient();
-    private static final ExecutorService fetcher = Executors.newVirtualThreadPerTaskExecutor();
 
     public MyProfileScreen(Screen parent, AbstractClientPlayer player) {
         super(parent, player);
@@ -42,8 +40,7 @@ public class MyProfileScreen extends ProfileScreen {
         widget(
                 Button.builder(
                                 Component.translatable("capey.config.my.create"),
-                                button ->
-                                    setScreen(new CreateCapeScreen(this))
+                                button -> setScreen(new CreateCapeScreen(this))
                         )
                         .bounds(width - 90, 10, 80, 20)
                         .build(),
@@ -67,7 +64,7 @@ public class MyProfileScreen extends ProfileScreen {
                                     Cape selected = this.selected.get();
                                     if (selected == null) return;
 
-                                    UUID nowUUID = mc.player != null ? mc.player.getUUID() : mc.getUser().getProfileId();
+                                    UUID nowUUID = Player.getCurrentUUID();
                                     if (!nowUUID.equals(selected.getUploader())) return;
 
                                     setScreen(new EditCapeScreen(this, selected));
@@ -84,38 +81,18 @@ public class MyProfileScreen extends ProfileScreen {
                                     Cape selected = this.selected.get();
                                     if (selected == null) return;
 
-                                    UUID nowUUID = mc.player != null ? mc.player.getUUID() : mc.getUser().getProfileId();
+                                    UUID nowUUID = Player.getCurrentUUID();
                                     if (!nowUUID.equals(selected.getUploader())) return;
 
-                                    fetcher.submit(() -> {
-                                        try {
-                                            HttpRequest request = HttpRequest.newBuilder()
-                                                    .uri(new URI("https://api.capey.app/v1/cape/" + selected.getUUID()))
-                                                    .DELETE()
-                                                    .header(
-                                                            HttpHeaders.AUTHORIZATION,
-                                                            Capey.tokens.get().has(nowUUID.toString())
-                                                                    ? Capey.tokens.get().get(nowUUID.toString()).getAsString()
-                                                                    : ""
-                                                    )
-                                                    .build();
-
-                                            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-                                            if (response.statusCode() != 200) {
-                                                System.out.println(response.statusCode());
-                                                System.out.println(response.body());
-                                            } else {
-                                                Cape.all(true);
-                                                mc.execute(() -> {
-                                                    onClose();
-                                                    local.get().remove(this.player.id().toString());
-                                                    Player.of(this.player.id()).reFetch();
-                                                    selected.unload();
-                                                });
-                                            }
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
+                                    Cape.deleteCape(selected.getUUID()).thenAccept(success -> {
+                                        if (success) {
+                                            Cape.all(true);
+                                            mc.execute(() -> {
+                                                onClose();
+                                                local.get().remove(this.player.id().toString());
+                                                Player.of(this.player.id()).reFetch();
+                                                selected.unload();
+                                            });
                                         }
                                     });
                                 }

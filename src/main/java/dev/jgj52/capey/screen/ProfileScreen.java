@@ -1,6 +1,5 @@
 package dev.jgj52.capey.screen;
 
-import com.google.common.net.HttpHeaders;
 import com.mojang.authlib.GameProfile;
 import dev.jgj52.capey.Capey;
 import dev.jgj52.capey.util.Cape;
@@ -20,15 +19,9 @@ import net.minecraft.world.entity.player.PlayerSkin;
 import net.minecraft.client.input.MouseButtonEvent;
 import org.jetbrains.annotations.NotNull;
 
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
@@ -36,8 +29,6 @@ import static dev.jgj52.screenapi.version.VScreen.setScreen;
 
 public class ProfileScreen extends BetterScreen {
     private static final Minecraft mc = Minecraft.getInstance();
-    private static final HttpClient client = HttpClient.newHttpClient();
-    private static final ExecutorService fetcher = Executors.newVirtualThreadPerTaskExecutor();
 
     private final Screen parent;
     protected final GameProfile player;
@@ -120,36 +111,15 @@ public class ProfileScreen extends BetterScreen {
                 public void onClick(@NotNull MouseButtonEvent event, boolean doubleClick) {
                     String nowUUID = tPlayer.id().toString();
                     String capeUUID = cape.getUUID().toString();
-                    if (background()) Capey.local.get().remove(nowUUID);
-                    else Capey.local.get().addProperty(nowUUID, capeUUID);
+                    if (background()) {
+                        Capey.local.get().remove(nowUUID);
+                        Player.setCape("");
+                    } else {
+                        Capey.local.get().addProperty(nowUUID, capeUUID);
+                        Player.setCape(capeUUID);
+                    }
                     Capey.local.save();
                     cplayer.reFetch();
-                    HttpRequest.BodyPublisher body =
-                            background()
-                                    ? HttpRequest.BodyPublishers.noBody()
-                                    : HttpRequest.BodyPublishers.ofString(capeUUID);
-                    fetcher.submit(() -> {
-                        try {
-                            HttpRequest request = HttpRequest.newBuilder()
-                                    .uri(new URI("https://api.capey.app/v1/player"))
-                                    .POST(body)
-                                    .header(
-                                            HttpHeaders.AUTHORIZATION,
-                                            Capey.tokens.get().has(nowUUID)
-                                                    ? Capey.tokens.get().get(nowUUID).getAsString()
-                                                    : ""
-                                    )
-                                    .build();
-
-                            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-                            if (response.statusCode() != 200) {
-                                System.out.println(response.body());
-                            }
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
-                    });
                 }
             }));
             Component name = Component.literal(capeO.get("name").getAsString());

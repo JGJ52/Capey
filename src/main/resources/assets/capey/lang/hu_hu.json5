@@ -19,14 +19,14 @@
             },
             "edit": {
                 "save": "Mentés"
-            }
+            },
         },
         "message": {
             "token": {
                 "your": "A Capey tokened:",
                 "share": "NE oszd meg ezt senkivel!",
                 "auto": "A token automatikusan le lett mentve."
-            }
+            },
         },
     }
 }

@@ -1,5 +1,6 @@
 package dev.jgj52.capey.util;
 
+import com.google.common.net.HttpHeaders;
 import com.mojang.authlib.GameProfile;
 import dev.jgj52.capey.Capey;
 import net.minecraft.client.Minecraft;
@@ -26,7 +27,42 @@ public class Player {
     public static void reFetchAll() {
         players.values().forEach(Player::reFetch);
     }
-    private static final Semaphore semaphore = new Semaphore(5); // i like the server alive
+    private static final Semaphore semaphore = new Semaphore(5);
+
+    public static UUID getCurrentUUID() {
+        return mc.player != null ? mc.player.getUUID() : mc.getUser().getProfileId();
+    }
+    public static String getToken() {
+        String uuid = getCurrentUUID().toString();
+
+        return Capey.tokens.get().has(uuid)
+                ? Capey.tokens.get().get(uuid).getAsString()
+                : "";
+    }
+
+    public static CompletableFuture<Boolean> setCape(String uuid) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(new URI("https://api.capey.app/v1/player"))
+                        .POST(HttpRequest.BodyPublishers.ofString(uuid))
+                        .header(
+                                HttpHeaders.AUTHORIZATION,
+                                getToken()
+                        )
+                        .build();
+
+                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+                if (response.statusCode() != 200) {
+                    System.out.println(response.body());
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            return false;
+        }, fetcher);
+    }
 
     private final UUID uuid;
     private GameProfile profile;
