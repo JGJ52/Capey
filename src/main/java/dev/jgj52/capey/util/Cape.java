@@ -5,7 +5,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.platform.NativeImage;
-import dev.jgj52.capey.Capey;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.resources.*;
@@ -21,9 +20,6 @@ import java.net.http.HttpClient;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
-
-import static dev.jgj52.capey.Capey.local;
 
 public class Cape {
     private static final ExecutorService fetcher = Executors.newVirtualThreadPerTaskExecutor();

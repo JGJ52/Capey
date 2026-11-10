@@ -1,6 +1,5 @@
 package dev.jgj52.capey.screen;
 
-import com.google.common.net.HttpHeaders;
 import com.google.gson.JsonObject;
 import dev.jgj52.capey.Capey;
 import dev.jgj52.capey.util.Cape;
@@ -18,24 +17,16 @@ import net.minecraft.world.entity.player.PlayerSkin;
 import net.minecraft.client.input.MouseButtonEvent;
 import org.jetbrains.annotations.NotNull;
 
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 
 import static dev.jgj52.screenapi.version.VScreen.setScreen;
 
 public class ConfigScreen extends BetterScreen {
     private static final Minecraft mc = Minecraft.getInstance();
-    private static final HttpClient client = HttpClient.newHttpClient();
-    private static final ExecutorService fetcher = Executors.newVirtualThreadPerTaskExecutor();
 
     private final Screen parent;
     public ConfigScreen(Screen parent) {

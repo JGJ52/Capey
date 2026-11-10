@@ -1,7 +1,5 @@
 package dev.jgj52.capey.screen;
 
-import com.google.common.net.HttpHeaders;
-import dev.jgj52.capey.Capey;
 import dev.jgj52.capey.util.Cape;
 import dev.jgj52.capey.util.Player;
 import net.minecraft.client.Minecraft;
@@ -13,13 +11,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.chat.Component;
 
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.util.UUID;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import static dev.jgj52.capey.Capey.local;
 import static dev.jgj52.screenapi.version.VScreen.setScreen;

@@ -1,8 +1,6 @@
 package dev.jgj52.capey.screen;
 
-import com.google.common.net.HttpHeaders;
 import com.mojang.blaze3d.platform.NativeImage;
-import dev.jgj52.capey.Capey;
 import dev.jgj52.capey.util.Cape;
 import dev.jgj52.screenapi.widget.BoardWidget;
 import dev.jgj52.screenapi.widget.PlayerWithCapeWidget;
@@ -20,16 +18,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.*;
 import org.jetbrains.annotations.NotNull;
 
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
