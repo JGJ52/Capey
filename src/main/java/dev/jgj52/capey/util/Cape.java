@@ -104,8 +104,8 @@ public class Cape {
             return false;
         }, fetcher);
     }
-    public static HttpResponse<byte[]> fetchCape(UUID cape, Map<String, String> headers) {
-        fetcher.submit(() -> {
+    public static CompletableFuture<HttpResponse<byte[]>> fetchCape(UUID cape, Map<String, String> headers) {
+        return CompletableFuture.supplyAsync(() -> {
             try {
                 semaphore.acquire();
                 HttpRequest.Builder builder = HttpRequest.newBuilder()
@@ -120,10 +120,9 @@ public class Cape {
             } finally {
                 semaphore.release();
             }
-        });
-        return null;
+        }, fetcher);
     }
-    public static HttpResponse<byte[]> fetchCape(UUID cape) {
+    public static CompletableFuture<HttpResponse<byte[]>> fetchCape(UUID cape) {
         return fetchCape(cape, Map.of());
     }
     public static CompletableFuture<Boolean> editCape(UUID uuid, String name, boolean elytra, byte[] png) {
@@ -237,31 +236,30 @@ public class Cape {
     }
 
     public void reFetch() {
-        HttpResponse<byte[]> response = fetchCape(uuid);
-        if (response == null) return;
-
-        if (response.statusCode() == 404) {
-            mc.execute(() -> {
-                unload();
-                identifier = null;
-            });
-        }
-        if (response.statusCode() == 200) {
-            mc.execute(() -> {
-                try {
+        fetchCape(uuid).thenAccept(response -> {
+            if (response.statusCode() == 404) {
+                mc.execute(() -> {
                     unload();
-                    if (image != null) image.close();
-                    image = NativeImage.read(response.body());
+                    identifier = null;
+                });
+            }
+            if (response.statusCode() == 200) {
+                mc.execute(() -> {
+                    try {
+                        unload();
+                        if (image != null) image.close();
+                        image = NativeImage.read(response.body());
 
-                    this.identifier = loadCape(uuid, image);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            });
-        }
-        name = response.headers().firstValue("X-Cape-Name").orElse("");
-        elytra = response.headers().firstValue("X-Cape-Change-Elytra").map(Boolean::parseBoolean).orElse(true);
-        uploader = response.headers().firstValue("X-Capey-Uploader").map(UUID::fromString).orElse(null);
+                        this.identifier = loadCape(uuid, image);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+            }
+            name = response.headers().firstValue("X-Cape-Name").orElse("");
+            elytra = response.headers().firstValue("X-Cape-Change-Elytra").map(Boolean::parseBoolean).orElse(true);
+            uploader = response.headers().firstValue("X-Capey-Uploader").map(UUID::fromString).orElse(null);
+        });
     }
 
     public void unload() {
