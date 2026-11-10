@@ -1,49 +1,41 @@
 package dev.jgj52.capey.screen;
 
 import com.mojang.authlib.GameProfile;
-import dev.jgj52.capey.Capey;
 import dev.jgj52.capey.util.Cape;
 import dev.jgj52.capey.util.Player;
 import dev.jgj52.screenapi.widget.PlayerWithCapeWidget;
-import dev.jgj52.screenapi.screen.BetterScreen;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.User;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.PlayerSkin;
-import net.minecraft.client.input.MouseButtonEvent;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
 import static dev.jgj52.screenapi.version.VScreen.setScreen;
 
-public class ProfileScreen extends BetterScreen {
-    private static final Minecraft mc = Minecraft.getInstance();
-
+public class ProfileScreen extends CapeSelectorScreen {
     private final Screen parent;
     protected final GameProfile player;
-    public ProfileScreen(Screen parent, AbstractClientPlayer player) {
+    public ProfileScreen(Screen parent, GameProfile player) {
+        super(Player.of(player.id()), getCapes(player), CapeSelectorScreen.selectCape); // super has to be first for java 21
         this.parent = parent;
-        this.player = player.getGameProfile();
+        this.player = player;
+    }
+    public ProfileScreen(Screen parent, AbstractClientPlayer player) {
+        this(parent, player.getGameProfile());
     }
     public ProfileScreen(Screen parent, User player) {
-        this.parent = parent;
-        this.player = new GameProfile(player.getProfileId(), player.getName());
+        this(parent, new GameProfile(player.getProfileId(), player.getName()));
     }
-
-    @Override
-    protected int getScrollSpeed() {
-        return 30;
+    private static List<Cape> getCapes(GameProfile player) {
+        return Cape.all(false).stream()
+                .map(cape -> Cape.of(UUID.fromString(cape.get("uuid").getAsString())))
+                .filter(cape -> cape.getUploader().equals(player.id()))
+                .toList();
     }
 
     protected int used = 0;
@@ -51,6 +43,7 @@ public class ProfileScreen extends BetterScreen {
 
     @Override
     protected void createWidgets(Font font) {
+        super.createWidgets(font);
         Player cplayer = Player.of(player.id());
         widget(new StringWidget(
                 70 - font.width(this.player.name()) / 2,
@@ -73,92 +66,6 @@ public class ProfileScreen extends BetterScreen {
         ), "skin", true);
         widget.rotateX(180);
         widget.rotateY(20);
-
-        AtomicInteger offset = new AtomicInteger();
-        int perRow = mc.getWindow().getGuiScaledWidth() / 80 - 2;
-        selected = cplayer::getCape;
-        List<PlayerWithCapeWidget> all = new ArrayList<>();
-        all.add(widget);
-        used = 0;
-        Cape.all(false).forEach(capeO -> {
-            Player player = Player.of(UUID.fromString(capeO.get("uploader").getAsString()));
-            if (player != cplayer) return;
-            Cape cape = Cape.of(UUID.fromString(capeO.get("uuid").getAsString()));
-            Supplier<PlayerSkin> skinWithCape = cape.fromSkin(player.getSkin());
-
-            int i = offset.getAndIncrement();
-            GameProfile tPlayer = this.player;
-            all.add(widget(new PlayerWithCapeWidget(
-                    (i % perRow) * 80 + (width - perRow * 80) / 2,
-                    (i / perRow) * 100 + 50,
-                    70,
-                    100,
-                    skinWithCape
-            ) {
-                @Override
-                protected void renderPlayer(@NotNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
-                    super.renderPlayer(graphics, mouseX, mouseY, a);
-
-                    if (selected.get() == cape && !background()) {
-                        all.forEach(w -> w.background(false));
-                        background(true);
-                    } else if (selected.get() == null && background()) {
-                        background(false);
-                    }
-                }
-
-                @Override
-                public void onClick(@NotNull MouseButtonEvent event, boolean doubleClick) {
-                    String nowUUID = tPlayer.id().toString();
-                    String capeUUID = cape.getUUID().toString();
-                    if (background()) {
-                        Capey.local.get().remove(nowUUID);
-                        Player.setCape("");
-                    } else {
-                        Capey.local.get().addProperty(nowUUID, capeUUID);
-                        Player.setCape(capeUUID);
-                    }
-                    Capey.local.save();
-                    cplayer.reFetch();
-                }
-            }));
-            Component name = Component.literal(capeO.get("name").getAsString());
-            int add = font.width(name) > 70 ? 2 : 35 - font.width(name) / 2;
-            widget(new StringWidget(
-                    (i % perRow) * 80 + (width - perRow * 80) / 2 + add,
-                    (i / perRow) * 100 + 90 + 50,
-                    70,
-                    font.lineHeight,
-                    name,
-                    font
-            ));
-            used++;
-        });
-        widget(
-                Button.builder(
-                                Component.translatable("capey.config.main.elytra"),
-                                button -> PlayerWithCapeWidget.FakePlayer.elytra()
-                        )
-                        .bounds(10, 10, 80, 20)
-                        .build(),
-                "elytra",
-                true
-        );
-        if (PlayerWithCapeWidget.FakePlayer.ely().isEmpty()) {
-            Component level = Component.translatable("capey.config.main.level").withColor(0x00ff0000);
-            int w = Math.min(
-                    font.width(level),
-                    width - 200
-            );
-            widget(new StringWidget(
-                    width / 2 - w / 2,
-                    10 + font.lineHeight,
-                    w,
-                    font.lineHeight,
-                    level,
-                    font
-            ), null, true);
-        }
     }
 
     @Override
