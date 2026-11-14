@@ -14,8 +14,8 @@
                 "delete": "Delete selected cape",
             },
             "create": {
-                "create.upload": "Upload cape",
-                "create.elytra": "Cape changes elytra texture: %s",
+                "upload": "Upload cape",
+                "elytra": "Cape changes elytra texture: %s",
             },
             "edit": {
                 "save": "Save",

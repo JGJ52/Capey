@@ -5,7 +5,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.platform.NativeImage;
-import dev.jgj52.capey.Capey;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.resources.*;
@@ -21,9 +20,6 @@ import java.net.http.HttpClient;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
-
-import static dev.jgj52.capey.Capey.local;
 
 public class Cape {
     private static final ExecutorService fetcher = Executors.newVirtualThreadPerTaskExecutor();
@@ -213,6 +209,7 @@ public class Cape {
     private volatile String name;
     private volatile boolean elytra;
     private volatile UUID uploader;
+    private volatile boolean isLoaded = false;
 
     private Cape(UUID uuid) {
         this.uuid = uuid;
@@ -229,6 +226,10 @@ public class Cape {
 
     public UUID getUploader() {
         return uploader;
+    }
+
+    public boolean isLoaded() {
+        return isLoaded;
     }
 
     public NativeImage getImage() {
@@ -259,6 +260,7 @@ public class Cape {
             name = response.headers().firstValue("X-Cape-Name").orElse("");
             elytra = response.headers().firstValue("X-Cape-Change-Elytra").map(Boolean::parseBoolean).orElse(true);
             uploader = response.headers().firstValue("X-Capey-Uploader").map(UUID::fromString).orElse(null);
+            isLoaded = true;
         });
     }
 
