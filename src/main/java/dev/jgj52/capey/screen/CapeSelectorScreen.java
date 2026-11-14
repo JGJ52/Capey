@@ -140,6 +140,8 @@ public class CapeSelectorScreen extends BetterScreen {
             ), null, true);
         }
 
+        boolean isOwn = local.getUUID().equals(selected.get().getUploader());
+
         edit = widget(
                 Button.builder(
                                 Component.translatable("capey.config.my.edit"),
@@ -156,7 +158,7 @@ public class CapeSelectorScreen extends BetterScreen {
                         .bounds(width - 130, height - 30, 120, 20)
                         .build()
         );
-        edit.visible = false;
+        edit.visible = isOwn;
 
         delete = widget(
                 Button.builder(
@@ -184,6 +186,6 @@ public class CapeSelectorScreen extends BetterScreen {
                         .bounds(10, height - 30, 120, 20)
                         .build()
         );
-        delete.visible = false;
+        delete.visible = isOwn;
     }
 }
