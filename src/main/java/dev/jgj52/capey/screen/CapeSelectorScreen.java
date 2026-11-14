@@ -66,7 +66,6 @@ public class CapeSelectorScreen extends BetterScreen {
         return 30;
     }
 
-    @SuppressWarnings("while")
     @Override
     protected void createWidgets(Font font) {
         AtomicInteger offset = new AtomicInteger();
