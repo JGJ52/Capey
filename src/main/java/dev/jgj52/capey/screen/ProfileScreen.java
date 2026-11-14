@@ -13,7 +13,6 @@ import net.minecraft.network.chat.Component;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Supplier;
 
 import static dev.jgj52.screenapi.version.VScreen.setScreen;
 
@@ -38,8 +37,7 @@ public class ProfileScreen extends CapeSelectorScreen {
                 .toList();
     }
 
-    protected int used = 0;
-    protected Supplier<Cape> selected;
+    public static int used = 0;
 
     @Override
     protected void createWidgets(Font font) {

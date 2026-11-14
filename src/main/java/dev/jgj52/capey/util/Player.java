@@ -85,7 +85,11 @@ public class Player {
 
     public void reFetch(boolean local) {
         if (local && Capey.local.has(uuid.toString())) {
-            cape = UUID.fromString(Capey.local.get(uuid.toString()).getAsString());
+            try {
+                cape = UUID.fromString(Capey.local.get(uuid.toString()).getAsString());
+            } catch (IllegalArgumentException e) {
+                cape = null;
+            }
             return;
         }
         fetcher.submit(() -> {

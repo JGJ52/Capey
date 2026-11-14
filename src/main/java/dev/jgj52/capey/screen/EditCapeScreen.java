@@ -503,7 +503,7 @@ public class EditCapeScreen extends BetterScreen {
 
         //? if >= 1.21.11 {
         @Override
-                //? }
+        //? }
         public void setValue(double newValue) {
             //? if >= 1.21.11 {
             super.setValue(newValue);

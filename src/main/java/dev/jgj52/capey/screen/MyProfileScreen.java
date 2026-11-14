@@ -1,8 +1,5 @@
 package dev.jgj52.capey.screen;
 
-import dev.jgj52.capey.util.Cape;
-import dev.jgj52.capey.util.Player;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.User;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
@@ -11,14 +8,9 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.chat.Component;
 
-import java.util.UUID;
-
-import static dev.jgj52.capey.Capey.local;
 import static dev.jgj52.screenapi.version.VScreen.setScreen;
 
 public class MyProfileScreen extends ProfileScreen {
-    private static final Minecraft mc = Minecraft.getInstance();
-
     public MyProfileScreen(Screen parent, AbstractClientPlayer player) {
         super(parent, player);
     }
@@ -48,49 +40,5 @@ public class MyProfileScreen extends ProfileScreen {
                 remaining,
                 font
         ), "remaining", true);
-
-        widget(
-                Button.builder(
-                                Component.translatable("capey.config.my.edit"),
-                                button -> {
-                                    Cape selected = this.selected.get();
-                                    if (selected == null) return;
-
-                                    UUID nowUUID = Player.getCurrentUUID();
-                                    if (!nowUUID.equals(selected.getUploader())) return;
-
-                                    setScreen(new EditCapeScreen(this, selected));
-                                }
-                        )
-                        .bounds(width - 130, height - 30, 120, 20)
-                        .build()
-        );
-
-        widget(
-                Button.builder(
-                                Component.translatable("capey.config.my.delete"),
-                                button -> {
-                                    Cape selected = this.selected.get();
-                                    if (selected == null) return;
-
-                                    UUID nowUUID = Player.getCurrentUUID();
-                                    if (!nowUUID.equals(selected.getUploader())) return;
-
-                                    Cape.deleteCape(selected.getUUID()).thenAccept(success -> {
-                                        if (success) {
-                                            Cape.all(true);
-                                            mc.execute(() -> {
-                                                onClose();
-                                                local.get().remove(this.player.id().toString());
-                                                Player.of(this.player.id()).reFetch();
-                                                selected.unload();
-                                            });
-                                        }
-                                    });
-                                }
-                        )
-                        .bounds(10, height - 30, 120, 20)
-                        .build()
-        );
     }
 }

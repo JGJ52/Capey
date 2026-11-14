@@ -10,8 +10,6 @@ import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -24,7 +22,9 @@ public class ConfigScreen extends CapeSelectorScreen {
     public ConfigScreen(Screen parent) {
         super(
                 Player.of(Player.getCurrentUUID()),
-                Optional.of(Cape.all(false).stream().map(cape -> Cape.of(UUID.fromString(cape.get("uuid").getAsString()))).toList()).orElse(List.of()),
+                Cape.all(false).stream()
+                        .map(cape -> Cape.of(UUID.fromString(cape.get("uuid").getAsString())))
+                        .toList(),
                 CapeSelectorScreen.selectCape
         );
         this.parent = parent;
@@ -36,21 +36,11 @@ public class ConfigScreen extends CapeSelectorScreen {
         widget(
                 Button.builder(
                                 Component.translatable("capey.config.main.reload"),
-                                button -> CompletableFuture.supplyAsync(() -> Cape.all(true)).thenAccept(capeList -> setScreen(new ConfigScreen(parent)))
-                        )
-                        .bounds(10, 10, 80, 20)
-                        .build(),
-                "reload",
-                true
-        );
-        widget(
-                Button.builder(
-                                Component.translatable("capey.config.main.elytra"),
-                                button -> PlayerWithCapeWidget.FakePlayer.elytra()
+                                button -> CompletableFuture.supplyAsync(() -> Cape.all(true)).thenAccept(capes -> setScreen(new ConfigScreen(parent)))
                         )
                         .bounds(10, 40, 80, 20)
                         .build(),
-                "elytra",
+                "reload",
                 true
         );
         widget(

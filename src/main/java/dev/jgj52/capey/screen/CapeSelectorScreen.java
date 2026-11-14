@@ -17,17 +17,20 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
+
+import static dev.jgj52.screenapi.version.VScreen.setScreen;
 
 public class CapeSelectorScreen extends BetterScreen {
     private static final Minecraft mc = Minecraft.getInstance();
 
-    public static onClickI selectCape = (Player player, Cape cape, boolean background, MouseButtonEvent event, boolean doubleClick) -> {
+    public static onClickI selectCape = (Player player, Cape cape, boolean background, Button edit, Button delete, MouseButtonEvent event, boolean doubleClick) -> {
         String nowUUID = player.getUUID().toString();
         String capeUUID = cape.getUUID().toString();
         if (background) {
-            Capey.local.get().remove(nowUUID);
+            Capey.local.get().addProperty(nowUUID, "");
             Player.setCape("");
         } else {
             Capey.local.get().addProperty(nowUUID, capeUUID);
@@ -35,11 +38,15 @@ public class CapeSelectorScreen extends BetterScreen {
         }
         Capey.local.save();
         player.reFetch();
+
+        boolean isOwn = player.getUUID().equals(cape.getUploader()) && !background;
+        if (edit != null) edit.visible = isOwn;
+        if (delete != null) delete.visible = isOwn;
     };
 
     @FunctionalInterface
     public interface onClickI {
-        void accept(Player player, Cape cape, boolean background, MouseButtonEvent event, boolean doubleClick);
+        void accept(Player player, Cape cape, boolean background, Button edit, Button delete, MouseButtonEvent event, boolean doubleClick);
     }
 
     private final Player local;
@@ -51,11 +58,15 @@ public class CapeSelectorScreen extends BetterScreen {
         this.onClickE = onClick;
     }
 
+    private Button edit;
+    private Button delete;
+
     @Override
     protected int getScrollSpeed() {
         return 30;
     }
 
+    @SuppressWarnings("while")
     @Override
     protected void createWidgets(Font font) {
         AtomicInteger offset = new AtomicInteger();
@@ -64,6 +75,7 @@ public class CapeSelectorScreen extends BetterScreen {
         List<PlayerWithCapeWidget> all = new ArrayList<>();
 
         capes.forEach(cape -> {
+            while (!cape.isLoaded()) {}
             Player player = Player.of(cape.getUploader());
             Supplier<PlayerSkin> skinWithCape = cape.fromSkin(player.getSkin());
 
@@ -89,7 +101,7 @@ public class CapeSelectorScreen extends BetterScreen {
 
                 @Override
                 public void onClick(@NotNull MouseButtonEvent event, boolean doubleClick) {
-                    onClickE.accept(player, cape, background(), event, doubleClick);
+                    onClickE.accept(local, cape, background(), edit, delete, event, doubleClick);
                 }
             }));
             Component name = Component.literal(cape.getName());
@@ -128,5 +140,51 @@ public class CapeSelectorScreen extends BetterScreen {
                     font
             ), null, true);
         }
+
+        edit = widget(
+                Button.builder(
+                                Component.translatable("capey.config.my.edit"),
+                                button -> {
+                                    Cape current = selected.get();
+                                    if (current == null) return;
+
+                                    UUID nowUUID = Player.getCurrentUUID();
+                                    if (!nowUUID.equals(current.getUploader())) return;
+
+                                    setScreen(new EditCapeScreen(this, current));
+                                }
+                        )
+                        .bounds(width - 130, height - 30, 120, 20)
+                        .build()
+        );
+        edit.visible = false;
+
+        delete = widget(
+                Button.builder(
+                                Component.translatable("capey.config.my.delete"),
+                                button -> {
+                                    Cape current = selected.get();
+                                    if (current == null) return;
+
+                                    UUID nowUUID = Player.getCurrentUUID();
+                                    if (!nowUUID.equals(current.getUploader())) return;
+
+                                    Cape.deleteCape(current.getUUID()).thenAccept(success -> {
+                                        if (success) {
+                                            Cape.all(true);
+                                            mc.execute(() -> {
+                                                onClose();
+                                                Capey.local.get().remove(local.getUUID().toString());
+                                                local.reFetch();
+                                                current.unload();
+                                            });
+                                        }
+                                    });
+                                }
+                        )
+                        .bounds(10, height - 30, 120, 20)
+                        .build()
+        );
+        delete.visible = false;
     }
 }

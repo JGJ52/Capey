@@ -209,6 +209,7 @@ public class Cape {
     private volatile String name;
     private volatile boolean elytra;
     private volatile UUID uploader;
+    private volatile boolean isLoaded = false;
 
     private Cape(UUID uuid) {
         this.uuid = uuid;
@@ -225,6 +226,10 @@ public class Cape {
 
     public UUID getUploader() {
         return uploader;
+    }
+
+    public boolean isLoaded() {
+        return isLoaded;
     }
 
     public NativeImage getImage() {
@@ -255,6 +260,7 @@ public class Cape {
             name = response.headers().firstValue("X-Cape-Name").orElse("");
             elytra = response.headers().firstValue("X-Cape-Change-Elytra").map(Boolean::parseBoolean).orElse(true);
             uploader = response.headers().firstValue("X-Capey-Uploader").map(UUID::fromString).orElse(null);
+            isLoaded = true;
         });
     }
 
