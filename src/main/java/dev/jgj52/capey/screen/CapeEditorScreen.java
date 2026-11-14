@@ -79,7 +79,7 @@ public class CapeEditorScreen extends BetterScreen {
                 colorSupply.get()
         );
 
-        Drawer.level(graphics, font, width, height);
+        Drawer.level(graphics, font, width);
     }
 
 

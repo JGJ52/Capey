@@ -2,11 +2,9 @@ package dev.jgj52.capey.screen;
 
 import dev.jgj52.capey.util.Cape;
 import dev.jgj52.capey.util.Player;
-import dev.jgj52.screenapi.widget.PlayerWithCapeWidget;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
@@ -53,21 +51,6 @@ public class ConfigScreen extends CapeSelectorScreen {
                 "profile",
                 true
         );
-        if (PlayerWithCapeWidget.FakePlayer.ely().isEmpty()) {
-            Component level = Component.translatable("capey.config.main.level").withColor(0x00ff0000);
-            int w = Math.min(
-                    font.width(level),
-                    width - 200
-            );
-            widget(new StringWidget(
-                    width / 2 - w / 2,
-                    10 + font.lineHeight,
-                    w,
-                    font.lineHeight,
-                    level,
-                    font
-            ), null, true);
-        }
     }
 
     @Override

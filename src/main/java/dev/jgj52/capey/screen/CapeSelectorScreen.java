@@ -2,6 +2,7 @@ package dev.jgj52.capey.screen;
 
 import dev.jgj52.capey.Capey;
 import dev.jgj52.capey.util.Cape;
+import dev.jgj52.capey.util.Drawer;
 import dev.jgj52.capey.util.Player;
 import dev.jgj52.screenapi.screen.BetterScreen;
 import dev.jgj52.screenapi.widget.PlayerWithCapeWidget;
@@ -67,6 +68,13 @@ public class CapeSelectorScreen extends BetterScreen {
     }
 
     @Override
+    public void render(@NotNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+        super.render(graphics, mouseX, mouseY, partialTick);
+
+        Drawer.level(graphics, font, width);
+    }
+
+    @Override
     protected void createWidgets(Font font) {
         AtomicInteger offset = new AtomicInteger();
         int perRow = mc.getWindow().getGuiScaledWidth() / 80 - 2;
@@ -124,21 +132,6 @@ public class CapeSelectorScreen extends BetterScreen {
                 "elytra",
                 true
         );
-        if (PlayerWithCapeWidget.FakePlayer.ely().isEmpty()) {
-            Component level = Component.translatable("capey.config.main.level").withColor(0x00ff0000);
-            int w = Math.min(
-                    font.width(level),
-                    width - 200
-            );
-            widget(new StringWidget(
-                    width / 2 - w / 2,
-                    10 + font.lineHeight,
-                    w,
-                    font.lineHeight,
-                    level,
-                    font
-            ), null, true);
-        }
 
         boolean isOwn = local.getUUID().equals(selected.get().getUploader());
 

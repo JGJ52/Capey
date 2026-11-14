@@ -9,17 +9,16 @@ import net.minecraft.network.chat.Component;
 public class Drawer {
     private static long levelStart = -1;
 
-    public static void level(GuiGraphicsExtractor graphics, Font font, int width, int height) {
-        if (PlayerWithCapeWidget.FakePlayer.ely().isEmpty()) {
+    public static void level(GuiGraphicsExtractor graphics, Font font, int width) {
+        if (!PlayerWithCapeWidget.FakePlayer.ely().isEmpty()) {
             levelStart = -1;
             return;
         }
 
-        Component level = Component.translatable("capey.config.main.level")
-                .withColor(0x00ff0000);
+        Component level = Component.translatable("capey.config.main.level").withColor(0x00ff0000);
 
         int textWidth = font.width(level);
-        int maxWidth = width * 2 / 3;
+        int maxWidth = width - 200;
         int x = width / 2 - maxWidth / 2;
         int y = 10 + font.lineHeight;
 

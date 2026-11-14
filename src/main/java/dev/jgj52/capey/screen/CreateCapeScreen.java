@@ -16,8 +16,8 @@ public class CreateCapeScreen extends CapeEditorScreen {
         this(parent, new Screen[1]);
     }
 
-    private CreateCapeScreen(Screen parent,Screen[] self) {
-        super(new NativeImage(64, 32, false), "Cape name", true, (png, name, elytra) ->
+    private CreateCapeScreen(Screen parent, Screen[] self) {
+        super(new NativeImage(64, 32, true), "Cape name", true, (png, name, elytra) ->
                 Cape.createCape(name, elytra, png).thenAccept(success -> {
                     if (success) {
                         mc.execute(() -> self[0].onClose());
